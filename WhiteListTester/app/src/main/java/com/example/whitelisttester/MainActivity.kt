@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         if (externalOk == externalTotal && whiteOk == whiteTotal) {
             // Все сайты работают
             binding.statusTextView.text = "Интернет работает нормально"
-            binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_green))
+            binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.md_theme_primary))
             binding.detailsTextView.text = "Доступны все проверенные ресурсы.\nВремя теста: ${duration}мс"
         } else if (whiteOk > (whiteTotal / 2) && externalOk == 0) {
             // Работают только белые списки
@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         } else if (whiteOk == 0) {
             // Ничего не работает
             binding.statusTextView.text = "Нет соединения"
-            binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_red))
+            binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
             binding.detailsTextView.text = "Проверьте подключение к сети.\nВремя теста: ${duration}мс"
         } else {
             // Смешанный результат (нестабильное соединение)
