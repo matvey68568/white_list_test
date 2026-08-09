@@ -15,8 +15,8 @@ import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var statusText: TextView
-    private lateinit var detailsText: TextView
+    private lateinit var statusTextView: TextView
+    private lateinit var detailsTextView: TextView
     private lateinit var testButton: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var glassCard: CardView
@@ -46,8 +46,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        statusText = findViewById(R.id.statusText)
-        detailsText = findViewById(R.id.detailsText)
+        statusTextView = findViewById(R.id.statusTextView)
+        detailsTextView = findViewById(R.id.detailsTextView)
         testButton = findViewById(R.id.testButton)
         progressBar = findViewById(R.id.progressBar)
         glassCard = findViewById(R.id.glassCard)
@@ -69,8 +69,8 @@ class MainActivity : AppCompatActivity() {
         testButton.isEnabled = false
         progressBar.visibility = View.VISIBLE
         progressBar.progress = 0
-        statusText.text = "Тестирование..."
-        detailsText.text = "Проверка доступности ресурсов"
+        statusTextView.text = "Тестирование..."
+        detailsTextView.text = "Проверка доступности ресурсов"
 
         CoroutineScope(Dispatchers.IO).launch {
             val startTime = System.currentTimeMillis()
@@ -130,24 +130,24 @@ class MainActivity : AppCompatActivity() {
     private fun updateUI(whiteOk: Int, whiteTotal: Int, externalOk: Int, externalTotal: Int, duration: Long) {
         if (externalOk == externalTotal && whiteOk == whiteTotal) {
             // Все сайты работают
-            statusText.text = "Интернет работает нормально"
-            statusText.setTextColor(ContextCompat.getColor(this, R.color.status_green))
-            detailsText.text = "Доступны все проверенные ресурсы.\nВремя теста: ${duration}мс"
+            statusTextView.text = "Интернет работает нормально"
+            statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_green))
+            detailsTextView.text = "Доступны все проверенные ресурсы.\nВремя теста: ${duration}мс"
         } else if (whiteOk > (whiteTotal / 2) && externalOk == 0) {
             // Работают только белые списки
-            statusText.text = "Белые списки"
-            statusText.setTextColor(ContextCompat.getColor(this, R.color.status_orange))
-            detailsText.text = "Доступны только российские сервисы из белого списка.\nВнешние ресурсы заблокированы.\nВремя теста: ${duration}мс"
+            statusTextView.text = "Белые списки"
+            statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_orange))
+            detailsTextView.text = "Доступны только российские сервисы из белого списка.\nВнешние ресурсы заблокированы.\nВремя теста: ${duration}мс"
         } else if (whiteOk == 0) {
             // Ничего не работает
-            statusText.text = "Нет соединения"
-            statusText.setTextColor(ContextCompat.getColor(this, R.color.status_red))
-            detailsText.text = "Проверьте подключение к сети.\nВремя теста: ${duration}мс"
+            statusTextView.text = "Нет соединения"
+            statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_red))
+            detailsTextView.text = "Проверьте подключение к сети.\nВремя теста: ${duration}мс"
         } else {
             // Смешанный результат (нестабильное соединение)
-            statusText.text = "Нестабильное соединение"
-            statusText.setTextColor(ContextCompat.getColor(this, R.color.status_yellow))
-            detailsText.text = "Часть ресурсов недоступна.\nБелый список: $whiteOk/$whiteTotal\nВнешние: $externalOk/$externalTotal"
+            statusTextView.text = "Нестабильное соединение"
+            statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_yellow))
+            detailsTextView.text = "Часть ресурсов недоступна.\nБелый список: $whiteOk/$whiteTotal\nВнешние: $externalOk/$externalTotal"
         }
     }
 }
