@@ -121,7 +121,12 @@ class MainActivity : AppCompatActivity() {
             appendLine("  Внешние сайты: $externalSize сайтов")
             appendLine()
             appendLine("🔄 Статус загрузки:")
-            appendLine("  Последняя загрузка: ${if (lastFetchTime > 0) android.text.format.DateFormat.format(\"HH:mm:ss\", lastFetchTime) else \"Никогда\"}")
+            val lastFetchTimeStr = if (lastFetchTime > 0) {
+                android.text.format.DateFormat.format("HH:mm:ss", lastFetchTime).toString()
+            } else {
+                "Никогда"
+            }
+            appendLine("  Последняя загрузка: $lastFetchTimeStr")
             appendLine("  Результат: $fetchStatus")
             appendLine()
             appendLine("📋 Используемые списки:")
@@ -132,8 +137,8 @@ class MainActivity : AppCompatActivity() {
             appendLine("  ${SiteListFetcher.SITES_JSON_URL}")
             appendLine()
             appendLine("📱 Текущие сайты:")
-            appendLine("  Белый список: ${currentWhitelistSites.joinToString(\", \")}")
-            appendLine("  Внешние: ${currentExternalSites.joinToString(\", \")}")
+            appendLine("  Белый список: ${currentWhitelistSites.joinToString(", ")}")
+            appendLine("  Внешние: ${currentExternalSites.joinToString(", ")}")
         }
         
         AlertDialog.Builder(this)
