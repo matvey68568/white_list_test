@@ -1,52 +1,49 @@
 ```
-# Kotlin/Android build artifacts
-*.class
-*.dex
-*.jar
+# Android build outputs
+*.apk
 *.aar
 *.so
-*.dll
-*.dylib
+*.dex
 
-# Android specific
+# Android build directories
 build/
 .gradle/
 local.properties
-captures/
-.externalNativeBuild/
+.proguard/
 
-# IDE files
+# Android Studio files
 .idea/
 *.iml
-*.ipr
 *.iws
-.vscode/
+out/
 
-# Dependencies
-node_modules/
-.libs/
+# Generated files
+gen/
+*/build/
+*/intermediates/
+*/outputs/
 
-# Logs
+# Log files
 *.log
 
-# Environment
-.env
-.env.local
-.env.*
+# Local configuration property files
+local.properties
 
-# Coverage reports
-coverage/
-*.gcov
-*.profdata
+# Android Studio navigation editor temporal files
+.navigation/
 
-# Temporary files
-*.tmp
-*.temp
-*~
-.swp
-.swo
+# Gradle
+.gradle/
+gradle-app.setting
 
-# OS generated files
-.DS_Store
-Thumbs.db
+# Android cache
+.cache/
+
+# Keystore files
+*.jks
+*.keystore
+
+# Debug and release folders
+debug/
+release/
 ```

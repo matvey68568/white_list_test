@@ -25,9 +25,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var siteAdapter: SiteAdapter
+    
+    // Список сайтов для тестирования (может быть изменен в настройках)
+    private var testSites = mutableListOf<String>()
 
     // Оптимизированный список: по 1-2 ключевых сайта из каждой категории для скорости
-    private val whiteListSites = listOf(
+    private val defaultWhiteListSites = listOf(
         "https://yandex.ru",        // Поисковик
         "https://yandex.ru/maps",   // Карты
         "https://rutube.ru",        // Видеохостинг
@@ -38,11 +41,27 @@ class MainActivity : AppCompatActivity() {
     private val externalSites = listOf(
         "https://google.com"
     )
+    
+    // Request code for settings activity
+    private val settingsLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            val updatedSites = result.data?.getStringArrayListExtra(SettingsActivity.EXTRA_SITES)
+            updatedSites?.let { 
+                testSites.clear()
+                testSites.addAll(it)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Инициализируем список сайтов значениями по умолчанию
+        testSites.addAll(defaultWhiteListSites)
 
         siteAdapter = SiteAdapter()
         binding.sitesRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -51,6 +70,17 @@ class MainActivity : AppCompatActivity() {
         binding.testButton.setOnClickListener {
             startTesting()
         }
+        
+        binding.settingsButton.setOnClickListener {
+            openSettings()
+        }
+    }
+    
+    private fun openSettings() {
+        val intent = Intent(this, SettingsActivity::class.java).apply {
+            putStringArrayListExtra(SettingsActivity.EXTRA_SITES, ArrayList(testSites))
+        }
+        settingsLauncher.launch(intent)
     }
 
     private fun startTesting() {
@@ -65,13 +95,13 @@ class MainActivity : AppCompatActivity() {
 
             // Параллельная проверка белых списков
             val whiteListResults = withContext(Dispatchers.IO) {
-                whiteListSites.map { site ->
+                testSites.map { site ->
                     async { checkSite(site) }
                 }.awaitAll()
             }
 
             val whiteListAccessible = whiteListResults.count { it }
-            val whiteListTotal = whiteListSites.size
+            val whiteListTotal = testSites.size
 
             // Параллельная проверка внешних сайтов
             val externalResults = withContext(Dispatchers.IO) {
@@ -88,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 
             withContext(Dispatchers.Main) {
                 updateUI(whiteListAccessible, whiteListTotal, externalAccessible, externalTotal, duration)
-                displaySiteResults(whiteListSites.zip(whiteListResults) + externalSites.zip(externalResults))
+                displaySiteResults(testSites.zip(whiteListResults) + externalSites.zip(externalResults))
                 binding.testButton.isEnabled = true
                 binding.progressBar.visibility = View.GONE
             }
