@@ -1,18 +1,59 @@
-# Compiled and build artifacts
-*.class
-*.o
-*.obj
-*.out
+```
+# Build artifacts
 build/
+
 # Dependencies
 .gradle/
-# Editors
-.idea/
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.egg-info/
+
 # Logs and temp files
 *.log
 *.tmp
 *.swp
+
 # Environment
 .env
 .env.local
 *.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# Coverage
+.coverage
+coverage/
+htmlcov/
+
+# Python specific
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg
+*.zip
+*.tar.gz
+*.whl
+
+# Compiled files
+*.class
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.out
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# MyPy cache
+.mypy_cache/
+.pytest_cache/
+```
