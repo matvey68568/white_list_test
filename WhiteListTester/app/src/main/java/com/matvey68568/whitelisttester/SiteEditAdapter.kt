@@ -31,7 +31,14 @@ class SiteEditAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(site: String, position: Int) {
-            binding.siteUrlEditText.setText(site)
+            // Очищаем предыдущие слушатели чтобы избежать дублирования
+            binding.siteUrlEditText.setOnFocusChangeListener(null)
+            binding.siteUrlEditText.setOnEditorActionListener(null)
+            
+            // Устанавливаем текст только если он отличается от текущего
+            if (binding.siteUrlEditText.text.toString() != site) {
+                binding.siteUrlEditText.setText(site)
+            }
             
             // Сохраняем при потере фокуса
             binding.siteUrlEditText.setOnFocusChangeListener { _, hasFocus ->
