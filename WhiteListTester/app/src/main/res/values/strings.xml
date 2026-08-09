@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">White List Tester</string>
+    <string name="settings">Настройки</string>
+    <string name="save">Сохранить</string>
+    <string name="back">Назад</string>
+    <string name="import_button">Импорт</string>
+    <string name="export_button">Экспорт</string>
+    <string name="test_sites_list">Список тестируемых сайтов</string>
+    <string name="add_site">Добавить сайт</string>
+    <string name="site_url_hint">URL сайта (например, https://example.com)</string>
+    <string name="delete">Удалить</string>
+    <string name="edit">Редактировать</string>
+    <string name="settings_saved">Настройки сохранены</string>
+    <string name="import_success">Список сайтов успешно загружен</string>
+    <string name="import_error">Ошибка при загрузке файла</string>
+    <string name="export_success">Список сайтов успешно сохранен</string>
+    <string name="export_error">Ошибка при сохранении файла</string>
+    <string name="empty_file">Файл пуст или имеет неверный формат</string>
+    <string name="invalid_url">Неверный формат URL</string>
 </resources>

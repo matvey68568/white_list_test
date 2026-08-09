@@ -9,6 +9,18 @@
     android:padding="16dp"
     tools:context=".MainActivity">
     
+    <!-- Settings button in top right corner -->
+    <ImageButton
+        android:id="@+id/settingsButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/settings"
+        android:src="@drawable/ic_settings"
+        app:tint="?attr/colorOnSurface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/contentCard"
         android:layout_width="0dp"
