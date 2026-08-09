@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -25,19 +24,23 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var siteAdapter: SiteAdapter
+    private val siteListFetcher = SiteListFetcher()
 
-    // Оптимизированный список: по 1-2 ключевых сайта из каждой категории для скорости
-    private val whiteListSites = listOf(
-        "https://yandex.ru",        // Поисковик
-        "https://yandex.ru/maps",   // Карты
-        "https://rutube.ru",        // Видеохостинг
-        "https://gosuslugi.ru"      // Госуслуги
+    // Дефолтные списки на случай ошибки загрузки
+    private val defaultWhitelistSites = listOf(
+        "https://yandex.ru",
+        "https://yandex.ru/maps",
+        "https://rutube.ru",
+        "https://gosuslugi.ru"
     )
 
-    // Контрольные сайты (должны работать только при полном интернете)
-    private val externalSites = listOf(
+    private val defaultExternalSites = listOf(
         "https://google.com"
     )
+
+    // Текущие списки сайтов (загружаются из репозитория)
+    private var currentWhitelistSites: List<String> = defaultWhitelistSites
+    private var currentExternalSites: List<String> = defaultExternalSites
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +53,25 @@ class MainActivity : AppCompatActivity() {
 
         binding.testButton.setOnClickListener {
             startTesting()
+        }
+
+        // Загрузка актуальных списков сайтов при старте
+        loadSiteLists()
+    }
+
+    /**
+     * Загружает списки сайтов из удаленного репозитория
+     * При ошибке использует дефолтные списки
+     */
+    private fun loadSiteLists() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val defaultLists = SiteListFetcher.SiteLists(defaultWhitelistSites, defaultExternalSites)
+            val siteLists = siteListFetcher.fetchSiteListsOrDefault(defaultLists)
+            
+            withContext(Dispatchers.Main) {
+                currentWhitelistSites = siteLists.whitelist
+                currentExternalSites = siteLists.external
+            }
         }
     }
 
@@ -65,30 +87,30 @@ class MainActivity : AppCompatActivity() {
 
             // Параллельная проверка белых списков
             val whiteListResults = withContext(Dispatchers.IO) {
-                whiteListSites.map { site ->
+                currentWhitelistSites.map { site ->
                     async { checkSite(site) }
                 }.awaitAll()
             }
 
             val whiteListAccessible = whiteListResults.count { it }
-            val whiteListTotal = whiteListSites.size
+            val whiteListTotal = currentWhitelistSites.size
 
             // Параллельная проверка внешних сайтов
             val externalResults = withContext(Dispatchers.IO) {
-                externalSites.map { site ->
+                currentExternalSites.map { site ->
                     async { checkSite(site) }
                 }.awaitAll()
             }
 
             val externalAccessible = externalResults.count { it }
-            val externalTotal = externalSites.size
+            val externalTotal = currentExternalSites.size
 
             val endTime = System.currentTimeMillis()
             val duration = endTime - startTime
 
             withContext(Dispatchers.Main) {
                 updateUI(whiteListAccessible, whiteListTotal, externalAccessible, externalTotal, duration)
-                displaySiteResults(whiteListSites.zip(whiteListResults) + externalSites.zip(externalResults))
+                displaySiteResults(currentWhitelistSites.zip(whiteListResults) + currentExternalSites.zip(externalResults))
                 binding.testButton.isEnabled = true
                 binding.progressBar.visibility = View.GONE
             }
