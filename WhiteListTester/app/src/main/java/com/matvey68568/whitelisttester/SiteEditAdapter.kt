@@ -22,7 +22,7 @@ class SiteEditAdapter(
     }
 
     override fun onBindViewHolder(holder: SiteEditViewHolder, position: Int) {
-        holder.bind(sites[position], position, sites[position] == "https://")
+        holder.bind(sites[position], position)
     }
 
     override fun getItemCount(): Int = sites.size
@@ -30,27 +30,19 @@ class SiteEditAdapter(
     inner class SiteEditViewHolder(private val binding: ItemSiteEditableBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(site: String, position: Int, isNewEmptySite: Boolean) {
+        fun bind(site: String, position: Int) {
             // Очищаем предыдущие слушатели чтобы избежать дублирования
             binding.siteUrlEditText.setOnFocusChangeListener(null)
             binding.siteUrlEditText.setOnEditorActionListener(null)
             
-            // Устанавливаем текст только если это не новый пустой сайт, который сейчас редактируется
-            // Это позволяет сохранить фокус и позицию курсора при вводе
-            if (!isNewEmptySite || !binding.siteUrlEditText.hasFocus()) {
-                binding.siteUrlEditText.setText(site)
-            }
+            // Всегда устанавливаем текст - это важно для корректной работы с recycled views
+            binding.siteUrlEditText.setText(site)
             
             // Сохраняем при потере фокуса
             binding.siteUrlEditText.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
                     val url = binding.siteUrlEditText.text.toString().trim()
                     onSiteChanged(position, url)
-                } else {
-                    // При получении фокуса выделяем весь текст, если это "https://"
-                    if (site == "https://") {
-                        binding.siteUrlEditText.selectAll()
-                    }
                 }
             }
             
