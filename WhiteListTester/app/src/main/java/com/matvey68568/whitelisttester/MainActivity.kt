@@ -1,10 +1,16 @@
 package com.matvey68568.whitelisttester
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.matvey68568.whitelisttester.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -18,10 +24,10 @@ import java.net.URL
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var siteAdapter: SiteAdapter
 
     // Оптимизированный список: по 1-2 ключевых сайта из каждой категории для скорости
     private val whiteListSites = listOf(
-        "https://vk.com",           // Соцсеть
         "https://yandex.ru",        // Поисковик
         "https://yandex.ru/maps",   // Карты
         "https://rutube.ru",        // Видеохостинг
@@ -37,6 +43,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        siteAdapter = SiteAdapter()
+        binding.sitesRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.sitesRecyclerView.adapter = siteAdapter
 
         binding.testButton.setOnClickListener {
             startTesting()
@@ -78,6 +88,7 @@ class MainActivity : AppCompatActivity() {
 
             withContext(Dispatchers.Main) {
                 updateUI(whiteListAccessible, whiteListTotal, externalAccessible, externalTotal, duration)
+                displaySiteResults(whiteListSites.zip(whiteListResults) + externalSites.zip(externalResults))
                 binding.testButton.isEnabled = true
                 binding.progressBar.visibility = View.GONE
             }
@@ -127,6 +138,55 @@ class MainActivity : AppCompatActivity() {
             binding.statusTextView.text = "Нестабильное соединение"
             binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_yellow))
             binding.detailsTextView.text = "Часть ресурсов недоступна.\nБелый список: $whiteOk/$whiteTotal\nВнешние: $externalOk/$externalTotal"
+        }
+    }
+
+    private fun displaySiteResults(results: List<Pair<String, Boolean>>) {
+        siteAdapter.setResults(results)
+    }
+
+    class SiteAdapter : RecyclerView.Adapter<SiteAdapter.SiteViewHolder>() {
+
+        private var sites: List<Pair<String, Boolean>> = emptyList()
+
+        fun setResults(results: List<Pair<String, Boolean>>) {
+            sites = results
+            notifyDataSetChanged()
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SiteViewHolder {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_site, parent, false)
+            return SiteViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: SiteViewHolder, position: Int) {
+            holder.bind(sites[position])
+        }
+
+        override fun getItemCount(): Int = sites.size
+
+        class SiteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            private val siteNameTextView: TextView = itemView.findViewById(R.id.siteNameTextView)
+            private val statusIconTextView: TextView = itemView.findViewById(R.id.statusIconTextView)
+
+            fun bind(siteResult: Pair<String, Boolean>) {
+                val (url, isWorking) = siteResult
+                siteNameTextView.text = url
+
+                val context = itemView.context
+                if (isWorking) {
+                    statusIconTextView.text = "✓"
+                    statusIconTextView.setTextColor(
+                        ContextCompat.getColor(context, R.color.status_green)
+                    )
+                } else {
+                    statusIconTextView.text = "✗"
+                    statusIconTextView.setTextColor(
+                        ContextCompat.getColor(context, R.color.md_theme_error)
+                    )
+                }
+            }
         }
     }
 }
