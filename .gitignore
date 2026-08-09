@@ -1,21 +1,4 @@
-# Compiled and build artifacts
-*.class
-*.o
-*.obj
-*.out
-build/
-dist/
-
-# Dependencies
-node_modules/
-venv/
-.venv/
-__pycache__/
-.mypy_cache/
-.pytest_cache/
-target/
-.gradle/
-
+```gitignore
 # Logs and temp files
 *.log
 *.tmp
@@ -30,7 +13,30 @@ target/
 .vscode/
 .idea/
 
-# System
+# Dependencies
+node_modules/
+venv/
+.venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+dist/
+build/
+target/
+.gradle/
+
+# Compiled files
+*.pyc
+*.class
+*.o
+*.exe
+*.dll
+*.so
+*.a
+*.obj
+*.out
+
+# System files
 .DS_Store
 Thumbs.db
 
@@ -39,7 +45,7 @@ coverage/
 htmlcov/
 .coverage
 
-# Archives
+# Compressed files
 *.zip
 *.gz
 *.tar
@@ -62,3 +68,4 @@ htmlcov/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+```
