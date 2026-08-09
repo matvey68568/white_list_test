@@ -68,12 +68,10 @@ class SitesListFragment : Fragment() {
     private fun loadSites() {
         val prefs = requireContext().getSharedPreferences("site_lists", 0)
         val key = if (listType == "white") "white_list_sites" else "external_list_sites"
-        val saved = prefs.getStringSet(key, emptySet()) ?: emptySet()
-        sites.clear()
-        sites.addAll(saved)
+        val saved = prefs.getStringSet(key, null)
         
-        // Если список пустой, загружаем значения по умолчанию
-        if (sites.isEmpty()) {
+        // Если список пустой или не сохранен, загружаем значения по умолчанию
+        if (saved == null || saved.isEmpty()) {
             if (listType == "white") {
                 sites.addAll(listOf(
                     "https://yandex.ru",
@@ -85,6 +83,10 @@ class SitesListFragment : Fragment() {
                 sites.add("https://google.com")
             }
             saveSites()
+        } else {
+            // Конвертируем в список для сохранения порядка
+            sites.clear()
+            sites.addAll(saved.toList())
         }
     }
 

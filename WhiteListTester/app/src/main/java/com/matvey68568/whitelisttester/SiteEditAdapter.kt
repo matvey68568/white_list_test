@@ -33,15 +33,35 @@ class SiteEditAdapter(
         fun bind(site: String, position: Int) {
             binding.siteUrlEditText.setText(site)
             
+            // Сохраняем при потере фокуса
             binding.siteUrlEditText.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
                     val url = binding.siteUrlEditText.text.toString().trim()
-                    onSiteChanged(adapterPosition, url)
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        onSiteChanged(adapterPosition, url)
+                    }
+                }
+            }
+            
+            // Сохраняем также по нажатию Enter
+            binding.siteUrlEditText.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
+                    actionId == android.view.inputmethod.EditorInfo.IME_ACTION_GO) {
+                    val url = binding.siteUrlEditText.text.toString().trim()
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        onSiteChanged(adapterPosition, url)
+                        binding.siteUrlEditText.clearFocus()
+                    }
+                    true
+                } else {
+                    false
                 }
             }
 
             binding.deleteButton.setOnClickListener {
-                onSiteDeleted(adapterPosition)
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    onSiteDeleted(adapterPosition)
+                }
             }
         }
     }
