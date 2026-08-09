@@ -1,44 +1,25 @@
+```
 # Compiled and build artifacts
 *.class
-*.o
-*.obj
-*.out
-
+*.dex
+*.so
+*.aar
+*.apk
+*.jar
 # Dependencies
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-node_modules/
-dist/
+.gradle/
 build/
-target/
-.venv/
-venv/
-.env
-.env.local
-*.env.*
-
+app/build/
+# IDE files
+.idea/
+*.iml
+*.iws
+.vscode/
+*.swp
+*.swo
 # Logs and temp files
 *.log
 *.tmp
-*.swp
-*.swo
-
-# Editors
-.vscode/
-.idea/
-
-# Coverage reports
-coverage/
-htmlcov/
-.coverage
-
-# Gradle
-.gradle/
-
-# MyPy
-.mypy_cache/
-
-# Pytest
-.pytest_cache/
+# Local configuration
+local.properties
+```
