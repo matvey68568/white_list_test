@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
 
     // Оптимизированный список: по 1-2 ключевых сайта из каждой категории для скорости
     private val whiteListSites = listOf(
-        "https://vk.com",           // Соцсеть
         "https://yandex.ru",        // Поисковик
         "https://yandex.ru/maps",   // Карты
         "https://rutube.ru",        // Видеохостинг
@@ -177,9 +176,9 @@ class MainActivity : AppCompatActivity() {
 
                 val context = itemView.context
                 if (isWorking) {
-                    statusIconImageView.setImageResource(android.R.drawable.ic_menu_add)
+                    statusIconImageView.setImageResource(android.R.drawable.ic_menu_today)
                     statusIconImageView.setColorFilter(
-                        ContextCompat.getColor(context, R.color.md_theme_primary),
+                        ContextCompat.getColor(context, R.color.status_green),
                         android.graphics.PorterDuff.Mode.SRC_IN
                     )
                 } else {
