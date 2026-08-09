@@ -1,5 +1,6 @@
 package com.matvey68568.whitelisttester
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,18 +27,30 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var siteAdapter: SiteAdapter
 
-    // Оптимизированный список: по 1-2 ключевых сайта из каждой категории для скорости
-    private val whiteListSites = listOf(
+    private val prefs by lazy { getSharedPreferences("site_lists", 0) }
+    
+    // Списки сайтов по умолчанию
+    private val defaultWhiteListSites = listOf(
         "https://yandex.ru",        // Поисковик
         "https://yandex.ru/maps",   // Карты
         "https://rutube.ru",        // Видеохостинг
         "https://gosuslugi.ru"      // Госуслуги
     )
 
-    // Контрольные сайты (должны работать только при полном интернете)
-    private val externalSites = listOf(
+    private val defaultExternalSites = listOf(
         "https://google.com"
     )
+
+    // Получаем списки сайтов из SharedPreferences или используем значения по умолчанию
+    private fun getWhiteListSites(): List<String> {
+        val saved = prefs.getStringSet("white_list_sites", null)
+        return saved?.toList() ?: defaultWhiteListSites
+    }
+
+    private fun getExternalSites(): List<String> {
+        val saved = prefs.getStringSet("external_list_sites", null)
+        return saved?.toList() ?: defaultExternalSites
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +64,12 @@ class MainActivity : AppCompatActivity() {
         binding.testButton.setOnClickListener {
             startTesting()
         }
+
+        // Добавляем кнопку настроек
+        binding.settingsButton.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun startTesting() {
@@ -59,6 +78,9 @@ class MainActivity : AppCompatActivity() {
         binding.progressBar.isIndeterminate = true
         binding.statusTextView.text = "Тестирование..."
         binding.detailsTextView.text = "Проверка доступности ресурсов"
+
+        val whiteListSites = getWhiteListSites()
+        val externalSites = getExternalSites()
 
         lifecycleScope.launch(Dispatchers.IO) {
             val startTime = System.currentTimeMillis()
