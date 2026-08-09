@@ -2,24 +2,22 @@ package com.example.whitelisttester
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.*
+import androidx.lifecycle.lifecycleScope
+import com.example.whitelisttester.databinding.ActivityMainBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var statusTextView: TextView
-    private lateinit var detailsTextView: TextView
-    private lateinit var testButton: Button
-    private lateinit var progressBar: ProgressBar
-    private lateinit var glassCard: CardView
+    private lateinit var binding: ActivityMainBinding
 
     // Оптимизированный список: по 1-2 ключевых сайта из каждой категории для скорости
     private val whiteListSites = listOf(
@@ -44,35 +42,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        statusTextView = findViewById(R.id.statusTextView)
-        detailsTextView = findViewById(R.id.detailsTextView)
-        testButton = findViewById(R.id.testButton)
-        progressBar = findViewById(R.id.progressBar)
-        glassCard = findViewById(R.id.glassCard)
-
-        // Настройка эффекта стекла для карточки
-        setupLiquidGlassEffect()
-
-        testButton.setOnClickListener {
+        binding.testButton.setOnClickListener {
             startTesting()
         }
     }
 
-    private fun setupLiquidGlassEffect() {
-        // Визуальная настройка карточки (прозрачность и тени уже в XML)
-        glassCard.alpha = 0.95f
-    }
-
     private fun startTesting() {
-        testButton.isEnabled = false
-        progressBar.visibility = View.VISIBLE
-        progressBar.progress = 0
-        statusTextView.text = "Тестирование..."
-        detailsTextView.text = "Проверка доступности ресурсов"
+        binding.testButton.isEnabled = false
+        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.isIndeterminate = true
+        binding.statusTextView.text = "Тестирование..."
+        binding.detailsTextView.text = "Проверка доступности ресурсов"
 
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             val startTime = System.currentTimeMillis()
 
             // Параллельная проверка белых списков
@@ -100,8 +85,8 @@ class MainActivity : AppCompatActivity() {
 
             withContext(Dispatchers.Main) {
                 updateUI(whiteListAccessible, whiteListTotal, externalAccessible, externalTotal, duration)
-                testButton.isEnabled = true
-                progressBar.visibility = View.GONE
+                binding.testButton.isEnabled = true
+                binding.progressBar.visibility = View.GONE
             }
         }
     }
@@ -130,24 +115,24 @@ class MainActivity : AppCompatActivity() {
     private fun updateUI(whiteOk: Int, whiteTotal: Int, externalOk: Int, externalTotal: Int, duration: Long) {
         if (externalOk == externalTotal && whiteOk == whiteTotal) {
             // Все сайты работают
-            statusTextView.text = "Интернет работает нормально"
-            statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_green))
-            detailsTextView.text = "Доступны все проверенные ресурсы.\nВремя теста: ${duration}мс"
+            binding.statusTextView.text = "Интернет работает нормально"
+            binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_green))
+            binding.detailsTextView.text = "Доступны все проверенные ресурсы.\nВремя теста: ${duration}мс"
         } else if (whiteOk > (whiteTotal / 2) && externalOk == 0) {
             // Работают только белые списки
-            statusTextView.text = "Белые списки"
-            statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_orange))
-            detailsTextView.text = "Доступны только российские сервисы из белого списка.\nВнешние ресурсы заблокированы.\nВремя теста: ${duration}мс"
+            binding.statusTextView.text = "Белые списки"
+            binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_orange))
+            binding.detailsTextView.text = "Доступны только российские сервисы из белого списка.\nВнешние ресурсы заблокированы.\nВремя теста: ${duration}мс"
         } else if (whiteOk == 0) {
             // Ничего не работает
-            statusTextView.text = "Нет соединения"
-            statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_red))
-            detailsTextView.text = "Проверьте подключение к сети.\nВремя теста: ${duration}мс"
+            binding.statusTextView.text = "Нет соединения"
+            binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_red))
+            binding.detailsTextView.text = "Проверьте подключение к сети.\nВремя теста: ${duration}мс"
         } else {
             // Смешанный результат (нестабильное соединение)
-            statusTextView.text = "Нестабильное соединение"
-            statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_yellow))
-            detailsTextView.text = "Часть ресурсов недоступна.\nБелый список: $whiteOk/$whiteTotal\nВнешние: $externalOk/$externalTotal"
+            binding.statusTextView.text = "Нестабильное соединение"
+            binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_yellow))
+            binding.detailsTextView.text = "Часть ресурсов недоступна.\nБелый список: $whiteOk/$whiteTotal\nВнешние: $externalOk/$externalTotal"
         }
     }
 }

@@ -1,71 +1,83 @@
 ```
-# Logs and temp files
+# Android build artifacts
+*.apk
+*.aar
+*.dex
+*.so
+
+# Android build directories
+build/
+.gradle/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Android Studio generated files
+local.properties
+gen/
+out/
+
+# Android cache
+.cache/
+
+# Gradle
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.iws
+.vscode/
+
+# Logs
 *.log
+
+# Temp files
 *.tmp
-*.swp
+*~
+.DS_Store
+Thumbs.db
 
 # Environment
 .env
 .env.local
 *.env.*
 
-# Editors
-.vscode/
-.idea/
-
-# Dependencies
-node_modules/
-venv/
-.venv/
-__pycache__/
-.mypy_cache/
-.pytest_cache/
-dist/
-build/
-target/
-.gradle/
-
-# Compiled files
-*.pyc
-*.class
-*.o
-*.exe
-*.dll
-*.so
-*.a
-*.obj
-*.out
-
-# System files
-.DS_Store
-Thumbs.db
-
 # Coverage
 coverage/
 htmlcov/
 .coverage
 
-# Compressed files
-*.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-*.lz4
-*.lzh
-*.cab
-*.arj
-*.rpm
-*.deb
-*.Z
-*.lz
-*.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
+# Python (if any Python files exist in project)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info/
+.eggs/
+.mypy_cache/
+.pytest_cache/
+
+# Node (if any JS files exist in project)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Java/Maven (if applicable)
+target/
+*.class
+*.jar
+*.war
+*.ear
+lib/
+.libs/
+
+# Build outputs
+dist/
+bin/
+obj/
 ```
