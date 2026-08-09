@@ -21,7 +21,9 @@ class MainActivity : AppCompatActivity() {
 
     // Оптимизированный список: по 1-2 ключевых сайта из каждой категории для скорости
     private val whiteListSites = listOf(
-        "https://vk.ru"             // Соцсети
+        "https://ya.ru",          // Поисковик
+        "https://ozon.ru",        // Маркетплейс
+        "https://wildberries.ru"  // Маркетплейс
     )
 
     // Контрольные сайты (должны работать только при полном интернете)
