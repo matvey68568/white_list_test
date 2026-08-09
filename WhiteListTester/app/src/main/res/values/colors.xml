@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Цвета статусов для Liquid Glass дизайна -->
+    <color name="status_green">#4ECDC4</color>
+    <color name="status_orange">#FFE66D</color>
+    <color name="status_red">#FF6B6B</color>
+    <color name="status_yellow">#FFD93D</color>
+    
+    <!-- Цвета фона -->
+    <color name="liquid_dark">#1A1A2E</color>
+    <color name="liquid_blue">#16213E</color>
+    <color name="liquid_accent">#0F3460</color>
 </resources>

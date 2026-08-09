@@ -1,70 +1,40 @@
 ```
-# Android build artifacts
+# Android build outputs
 *.apk
 *.aar
 *.dex
-*.so
-*.jar
 
 # Android build directories
 build/
 .gradle/
 local.properties
 
-# IDE files
+# IDE and editor files
 .idea/
 *.iml
 *.iws
 .vscode/
 
+# Compiled files
+*.class
+*.dex
+*.so
+*.jar
+
+# Temp files
+*.tmp
+*.swp
+*~
+
 # Logs
 *.log
 
-# Environment
-.env
-.env.local
-*.env.*
-
-# OS generated files
+# System files
 .DS_Store
 Thumbs.db
 
-# Python artifacts (if any Python files present)
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-
-# Compiled files
-*.class
-*.o
-*.obj
-*.out
-*.dll
-*.so
-*.a
-
-# Compressed files
-*.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-*.lz4
-*.lzh
-*.cab
-*.arj
-*.rpm
-*.deb
-*.Z
-*.lz
-*.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
+# Environment variables
+.env
+.env.local
+*.env.*
 ```
