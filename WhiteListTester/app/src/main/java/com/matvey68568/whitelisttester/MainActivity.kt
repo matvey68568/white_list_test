@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -17,6 +16,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -26,18 +26,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var siteAdapter: SiteAdapter
 
-    // Оптимизированный список: по 1-2 ключевых сайта из каждой категории для скорости
-    private val whiteListSites = listOf(
-        "https://yandex.ru",        // Поисковик
-        "https://yandex.ru/maps",   // Карты
-        "https://rutube.ru",        // Видеохостинг
-        "https://gosuslugi.ru"      // Госуслуги
-    )
+    // URL для загрузки списков сайтов из репозитория
+    private val sitesJsonUrl = "https://raw.githubusercontent.com/matvey68568/white_list_test_lists/refs/heads/main/sites.json"
 
-    // Контрольные сайты (должны работать только при полном интернете)
-    private val externalSites = listOf(
-        "https://google.com"
-    )
+    // Списки сайтов (загружаются из репозитория)
+    private var whiteListSites = listOf<String>()
+    private var externalSites = listOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +45,81 @@ class MainActivity : AppCompatActivity() {
         binding.testButton.setOnClickListener {
             startTesting()
         }
+
+        // Загрузка списков сайтов при запуске
+        loadSitesFromRepository()
+    }
+
+    private fun loadSitesFromRepository() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val jsonContent = fetchJsonFromUrl(sitesJsonUrl)
+                val sites = parseSitesJson(jsonContent)
+                
+                withContext(Dispatchers.Main) {
+                    whiteListSites = sites.first
+                    externalSites = sites.second
+                    binding.detailsTextView.text = "Загружено сайтов: белый список (${whiteListSites.size}), внешние (${externalSites.size})"
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    // При ошибке загрузки используем значения по умолчанию
+                    whiteListSites = listOf(
+                        "https://yandex.ru",
+                        "https://yandex.ru/maps",
+                        "https://rutube.ru",
+                        "https://gosuslugi.ru"
+                    )
+                    externalSites = listOf("https://google.com")
+                    binding.detailsTextView.text = "Используются списки по умолчанию (ошибка загрузки)"
+                }
+            }
+        }
+    }
+
+    private fun fetchJsonFromUrl(urlString: String): String {
+        var connection: HttpURLConnection? = null
+        return try {
+            val url = URL(urlString)
+            connection = url.openConnection() as HttpURLConnection
+            connection.connectTimeout = 5000
+            connection.readTimeout = 5000
+            connection.requestMethod = "GET"
+            connection.useCaches = false
+            
+            val responseCode = connection.responseCode
+            if (responseCode >= 200 && responseCode < 400) {
+                connection.inputStream.bufferedReader().use { it.readText() }
+            } else {
+                throw IOException("HTTP error: $responseCode")
+            }
+        } catch (e: Exception) {
+            throw e
+        } finally {
+            connection?.disconnect()
+        }
+    }
+
+    private fun parseSitesJson(jsonString: String): Pair<List<String>, List<String>> {
+        val json = JSONObject(jsonString)
+        
+        val whitelist = json.getJSONArray("whitelist")
+        val external = json.getJSONArray("external")
+        
+        val whitelistSites = mutableListOf<String>()
+        for (i in 0 until whitelist.length()) {
+            val site = whitelist.getString(i)
+            // Добавляем https:// если нет протокола
+            whitelistSites.add(if (site.startsWith("http")) site else "https://$site")
+        }
+        
+        val externalSites = mutableListOf<String>()
+        for (i in 0 until external.length()) {
+            val site = external.getString(i)
+            externalSites.add(if (site.startsWith("http")) site else "https://$site")
+        }
+        
+        return Pair(whitelistSites, externalSites)
     }
 
     private fun startTesting() {
