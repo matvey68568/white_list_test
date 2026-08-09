@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
         return try {
             val url = URL(urlString)
             val connection = url.openConnection() as HttpURLConnection
-            connection.connectTimeout = 3000 // Уменьшено до 3 сек для скорости
+            connection.connectTimeout = 3000
             connection.readTimeout = 3000
             connection.requestMethod = "HEAD"
             connection.useCaches = false
@@ -114,22 +114,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUI(whiteOk: Int, whiteTotal: Int, externalOk: Int, externalTotal: Int, duration: Long) {
         if (externalOk == externalTotal && whiteOk == whiteTotal) {
-            // Все сайты работают
             binding.statusTextView.text = "Интернет работает нормально"
             binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.md_theme_primary))
             binding.detailsTextView.text = "Доступны все проверенные ресурсы.\nВремя теста: ${duration}мс"
         } else if (whiteOk > (whiteTotal / 2) && externalOk == 0) {
-            // Работают только белые списки
             binding.statusTextView.text = "Белые списки"
             binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_orange))
             binding.detailsTextView.text = "Доступны только российские сервисы из белого списка.\nВнешние ресурсы заблокированы.\nВремя теста: ${duration}мс"
         } else if (whiteOk == 0) {
-            // Ничего не работает
             binding.statusTextView.text = "Нет соединения"
             binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.md_theme_error))
             binding.detailsTextView.text = "Проверьте подключение к сети.\nВремя теста: ${duration}мс"
         } else {
-            // Смешанный результат (нестабильное соединение)
             binding.statusTextView.text = "Нестабильное соединение"
             binding.statusTextView.setTextColor(ContextCompat.getColor(this, R.color.status_yellow))
             binding.detailsTextView.text = "Часть ресурсов недоступна.\nБелый список: $whiteOk/$whiteTotal\nВнешние: $externalOk/$externalTotal"
