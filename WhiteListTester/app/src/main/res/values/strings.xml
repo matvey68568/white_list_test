@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">White List Tester</string>
+    
+    <!-- Settings Screen -->
+    <string name="settings_title">Настройки</string>
+    <string name="settings_save">Сохранить</string>
+    <string name="settings_back">Назад</string>
+    <string name="settings_sites_list">Список тестируемых сайтов</string>
+    <string name="settings_add_site">Добавить сайт</string>
+    <string name="settings_import">Импорт</string>
+    <string name="settings_export">Экспорт</string>
+    <string name="settings_empty_list">Список сайтов пуст</string>
+    <string name="settings_site_hint">Введите URL сайта</string>
+    <string name="settings_saved">Настройки сохранены</string>
+    <string name="settings_import_success">Сайты успешно импортированы</string>
+    <string name="settings_export_success">Файл экспортирован</string>
+    <string name="settings_import_error">Ошибка импорта файла</string>
+    <string name="settings_export_error">Ошибка экспорта файла</string>
+    <string name="settings_delete">Удалить</string>
+    <string name="settings_edit">Редактировать</string>
 </resources>

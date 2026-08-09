@@ -51,6 +51,11 @@ class MainActivity : AppCompatActivity() {
         binding.testButton.setOnClickListener {
             startTesting()
         }
+
+        // Settings button - open SettingsActivity
+        binding.settingsButton.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
     }
 
     private fun startTesting() {
