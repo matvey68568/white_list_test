@@ -1,67 +1,36 @@
 ```
-# Android build outputs
+# Android build artifacts
 *.apk
 *.aar
 *.dex
+*.so
 
-# Android generated files
-gen/
-bin/
-obj/
+# Android dependency directories
+.gradle/
+build/
+app/build/
 
-# Android local configuration
-local.properties
-gradle.properties
-
-# Android studio
+# Android studio IDE files
 .idea/
 *.iml
 *.iws
+*.log
 
-# Build directories
-build/
-.gradle/
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Keystore properties
+*.keystore
+*.jks
+
+# Generated files
+gen/
 out/
 
-# Log files
+# Log Files
 *.log
 
 # OS generated files
 .DS_Store
 Thumbs.db
-
-# Environment files
-.env
-.env.local
-*.env.*
-
-# Python related (if any Python components)
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-
-# Node related (if any web components)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# IDE
-.vscode/
-*.swp
-*.swo
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# Temporary files
-*.tmp
-*.temp
 ```
