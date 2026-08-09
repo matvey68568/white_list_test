@@ -1,5 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Material You (Material Design 3) Color Scheme -->
+    <!-- Light Theme Colors -->
+    <color name="md_theme_primary">#006C4C</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#89F8C7</color>
+    <color name="md_theme_onPrimaryContainer">#002115</color>
+    <color name="md_theme_secondary">#4A6359</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#CCE8DB</color>
+    <color name="md_theme_onSecondaryContainer">#051F17</color>
+    <color name="md_theme_tertiary">#3B6475</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#C1E9FD</color>
+    <color name="md_theme_onTertiaryContainer">#001F28</color>
+    <color name="md_theme_error">#BA1A1A</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_onErrorContainer">#FFDAD6</color>
+    <color name="md_theme_background">#FBFDF9</color>
+    <color name="md_theme_onBackground">#191C1A</color>
+    <color name="md_theme_surface">#FBFDF9</color>
+    <color name="md_theme_onSurface">#191C1A</color>
+    <color name="md_theme_surfaceVariant">#DBE5DD</color>
+    <color name="md_theme_onSurfaceVariant">#404943</color>
+    <color name="md_theme_outline">#707973</color>
+    
+    <!-- Dark Theme Colors -->
+    <color name="md_theme_dark_primary">#6CDCB1</color>
+    <color name="md_theme_dark_onPrimary">#003826</color>
+    <color name="md_theme_dark_primaryContainer">#005239</color>
+    <color name="md_theme_dark_onPrimaryContainer">#89F8C7</color>
+    <color name="md_theme_dark_secondary">#B1CCBF</color>
+    <color name="md_theme_dark_onSecondary">#1D352C</color>
+    <color name="md_theme_dark_secondaryContainer">#334B42</color>
+    <color name="md_theme_dark_onSecondaryContainer">#CCE8DB</color>
+    <color name="md_theme_dark_tertiary">#A3CDE0</color>
+    <color name="md_theme_dark_onTertiary">#003544</color>
+    <color name="md_theme_dark_tertiaryContainer">#224C5C</color>
+    <color name="md_theme_dark_onTertiaryContainer">#C1E9FD</color>
+    <color name="md_theme_dark_error">#FFB4AB</color>
+    <color name="md_theme_dark_onError">#690005</color>
+    <color name="md_theme_dark_onErrorContainer">#FFDAD6</color>
+    <color name="md_theme_dark_background">#191C1A</color>
+    <color name="md_theme_dark_onBackground">#E1E3DF</color>
+    <color name="md_theme_dark_surface">#191C1A</color>
+    <color name="md_theme_dark_onSurface">#E1E3DF</color>
+    <color name="md_theme_dark_surfaceVariant">#404943</color>
+    <color name="md_theme_dark_onSurfaceVariant">#BFC9C1</color>
+    <color name="md_theme_dark_outline">#89938C</color>
+
+    <!-- Legacy colors for compatibility -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -8,13 +58,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- Цвета статусов для Liquid Glass дизайна -->
+    <!-- Status colors -->
     <color name="status_green">#4ECDC4</color>
     <color name="status_orange">#FFE66D</color>
     <color name="status_red">#FF6B6B</color>
     <color name="status_yellow">#FFD93D</color>
     
-    <!-- Цвета фона -->
+    <!-- Background colors -->
     <color name="liquid_dark">#1A1A2E</color>
     <color name="liquid_blue">#16213E</color>
     <color name="liquid_accent">#0F3460</color>

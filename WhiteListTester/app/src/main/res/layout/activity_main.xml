@@ -5,41 +5,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/liquid_background"
+    android:background="?android:colorBackground"
     android:padding="16dp"
     tools:context=".MainActivity">
     
-    <View
-        android:id="@+id/liquidBackground1"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:background="@drawable/liquid_gradient_1"
-        android:alpha="0.6"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-    
-    <View
-        android:id="@+id/liquidBackground2"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:background="@drawable/liquid_gradient_2"
-        android:alpha="0.5"
-        app:layout_constraintTop_toBottomOf="@id/liquidBackground1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/contentCard" />
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/contentCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        app:cardBackgroundColor="#40FFFFFF"
-        app:cardCornerRadius="32dp"
-        app:cardElevation="8dp"
-        app:strokeColor="#66FFFFFF"
-        app:strokeWidth="1dp"
+        android:layout_marginTop="32dp"
+        style="@style/Widget.Material3.CardView.Elevated"
+        app:cardBackgroundColor="?attr/colorSurfaceVariant"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -56,19 +34,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Тестирование Белых Списков"
-                android:textSize="26sp"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:shadowColor="#80000000"
-                android:shadowDx="2"
-                android:shadowDy="2"
-                android:shadowRadius="4"
-                android:layout_marginBottom="16dp" />
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginBottom="8dp" />
             
-            <View
-                android:layout_width="60dp"
-                android:layout_height="4dp"
-                android:background="@drawable/status_indicator"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Проверка доступа к РФ сервисам"
+                android:textSize="14sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:alpha="0.7"
                 android:layout_marginBottom="24dp" />
             
             <TextView
@@ -76,14 +53,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Нажмите кнопку для проверки"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/colorPrimary"
                 android:gravity="center"
-                android:shadowColor="#80000000"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
                 android:layout_marginBottom="12dp" />
             
             <TextView
@@ -91,8 +64,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="16sp"
-                android:textColor="#E0FFFFFF"
+                android:textSize="14sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:alpha="0.8"
                 android:gravity="center"
                 android:lineSpacingExtra="4dp" />
             
@@ -102,42 +76,42 @@
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="0dp"
-        android:layout_height="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:max="100"
         android:visibility="gone"
-        app:indicatorColor="@color/status_green"
-        app:trackColor="#40FFFFFF"
+        android:indeterminate="true"
+        app:indicatorColor="?attr/colorPrimary"
+        app:trackColor="?attr/colorSurfaceVariant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/contentCard" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/testButton"
-        android:layout_width="220dp"
+        android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:text="Начать тест"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="#FFFFFF"
+        style="@style/Widget.Material3.Button"
         app:cornerRadius="28dp"
-        app:backgroundTint="@color/purple_500"
-        app:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/progressBar" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/infoTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Приложение проверяет доступность сайтов из российского белого списка и внешних ресурсов для определения текущего статуса интернет-соединения."
-        android:textSize="14sp"
-        android:textColor="#B0FFFFFF"
+        android:textSize="13sp"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:alpha="0.7"
         android:gravity="center"
         android:lineSpacingExtra="4dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/testButton" />
