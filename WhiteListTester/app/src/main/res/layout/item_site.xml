@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/siteNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="16sp"
+        android:textColor="?attr/colorOnSurface"
+        tools:text="https://example.com" />
+
+    <ImageView
+        android:id="@+id/statusIconImageView"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="Status"
+        tools:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+</LinearLayout>
