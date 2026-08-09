@@ -1,49 +1,66 @@
 ```
-# Android build outputs
-*.apk
-*.aar
+# Compiled and build artifacts
+*.class
+*.o
+*.obj
 *.so
-*.dex
-
-# Android build directories
+*.a
+*.dll
+*.exe
+*.out
 build/
+dist/
+
+# Dependencies
+node_modules/
+venv/
+.venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+target/
 .gradle/
-local.properties
-.proguard/
 
-# Android Studio files
-.idea/
-*.iml
-*.iws
-out/
-
-# Generated files
-gen/
-*/build/
-*/intermediates/
-*/outputs/
-
-# Log files
+# Logs and temp files
 *.log
+*.tmp
+*.swp
 
-# Local configuration property files
-local.properties
+# Environment
+.env
+.env.local
+*.env.*
 
-# Android Studio navigation editor temporal files
-.navigation/
+# Editors
+.vscode/
+.idea/
 
-# Gradle
-.gradle/
-gradle-app.setting
+# System files
+.DS_Store
+Thumbs.db
 
-# Android cache
-.cache/
+# Coverage
+coverage/
+htmlcov/
+.coverage
 
-# Keystore files
-*.jks
-*.keystore
-
-# Debug and release folders
-debug/
-release/
+# Common compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
 ```
