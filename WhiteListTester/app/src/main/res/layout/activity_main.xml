@@ -13,7 +13,7 @@
         android:id="@+id/contentCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="72dp"
         style="@style/Widget.Material3.CardView.Elevated"
         app:cardBackgroundColor="?attr/colorSurfaceVariant"
         app:cardCornerRadius="28dp"
@@ -105,7 +105,6 @@
         android:id="@+id/settingsButton"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:layout_marginTop="12dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
@@ -115,9 +114,8 @@
         app:iconGravity="textStart"
         app:iconPadding="0dp"
         app:cornerRadius="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/testButton" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/infoTextView"
