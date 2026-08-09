@@ -17,11 +17,12 @@
         android:textColor="?attr/colorOnSurface"
         tools:text="https://example.com" />
 
-    <ImageView
-        android:id="@+id/statusIconImageView"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:contentDescription="Status"
-        tools:src="@android:drawable/ic_menu_close_clear_cancel" />
+    <TextView
+        android:id="@+id/statusIconTextView"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:gravity="center"
+        android:textSize="24sp"
+        tools:text="✓" />
 
 </LinearLayout>
