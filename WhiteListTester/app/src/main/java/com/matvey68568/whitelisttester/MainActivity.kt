@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity() {
 
         class SiteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val siteNameTextView: TextView = itemView.findViewById(R.id.siteNameTextView)
-            private val statusIconImageView: ImageView = itemView.findViewById(R.id.statusIconImageView)
+            private val statusIconTextView: TextView = itemView.findViewById(R.id.statusIconTextView)
 
             fun bind(siteResult: Pair<String, Boolean>) {
                 val (url, isWorking) = siteResult
@@ -176,16 +176,14 @@ class MainActivity : AppCompatActivity() {
 
                 val context = itemView.context
                 if (isWorking) {
-                    statusIconImageView.setImageResource(android.R.drawable.ic_menu_today)
-                    statusIconImageView.setColorFilter(
-                        ContextCompat.getColor(context, R.color.status_green),
-                        android.graphics.PorterDuff.Mode.SRC_IN
+                    statusIconTextView.text = "✓"
+                    statusIconTextView.setTextColor(
+                        ContextCompat.getColor(context, R.color.status_green)
                     )
                 } else {
-                    statusIconImageView.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
-                    statusIconImageView.setColorFilter(
-                        ContextCompat.getColor(context, R.color.md_theme_error),
-                        android.graphics.PorterDuff.Mode.SRC_IN
+                    statusIconTextView.text = "✗"
+                    statusIconTextView.setTextColor(
+                        ContextCompat.getColor(context, R.color.md_theme_error)
                     )
                 }
             }
