@@ -82,23 +82,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkSite(urlString: String): Boolean {
+        var connection: HttpURLConnection? = null
         return try {
             val url = URL(urlString)
-            val connection = url.openConnection() as HttpURLConnection
-            connection.connectTimeout = 3000 // Уменьшено до 3 сек для скорости
+            connection = url.openConnection() as HttpURLConnection
+            connection.connectTimeout = 3000
             connection.readTimeout = 3000
             connection.requestMethod = "HEAD"
             connection.useCaches = false
             connection.instanceFollowRedirects = true
             
             val responseCode = connection.responseCode
-            connection.disconnect()
-            
             (responseCode >= 200 && responseCode < 400)
         } catch (e: IOException) {
             false
         } catch (e: Exception) {
             false
+        } finally {
+            connection?.disconnect()
         }
     }
 
