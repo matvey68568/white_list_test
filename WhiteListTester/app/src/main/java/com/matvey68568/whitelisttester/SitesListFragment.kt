@@ -161,6 +161,11 @@ class SitesListFragment : Fragment() {
         saveSites()
     }
 
+    fun forceSave() {
+        // Сохраняем текущее состояние списка
+        saveSites()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

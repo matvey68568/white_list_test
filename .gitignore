@@ -1,25 +1,42 @@
-```
-# Compiled and build artifacts
+# Android/Kotlin specific ignores
 *.class
 *.dex
+*.jar
+*.apk
+*.aab
 *.so
 *.aar
-*.apk
-*.jar
-# Dependencies
-.gradle/
+
+# Build directories
 build/
-app/build/
+.gradle/
+.externalNativeBuild/
+.cxx/
+
+# Local configuration
+local.properties
+.settings/
+.proguard/
+
 # IDE files
 .idea/
 *.iml
+*.ipr
 *.iws
 .vscode/
-*.swp
-*.swo
-# Logs and temp files
+
+# Log files
 *.log
+
+# Temp files
 *.tmp
-# Local configuration
-local.properties
-```
+*.temp
+
+# Compiled Python files (if any Python scripts in project)
+*.pyc
+__pycache__/
+
+# Dependencies
+node_modules/
+venv/
+.venv/

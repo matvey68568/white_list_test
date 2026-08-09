@@ -118,6 +118,10 @@ class SettingsActivity : AppCompatActivity() {
             }
         }.attach()
 
+        binding.saveButton.setOnClickListener {
+            saveAllSites()
+        }
+
         binding.exportButton.setOnClickListener {
             exportSites()
         }
@@ -125,6 +129,14 @@ class SettingsActivity : AppCompatActivity() {
         binding.importButton.setOnClickListener {
             importSites()
         }
+    }
+
+    private fun saveAllSites() {
+        // Принудительно сохраняем текущее состояние обоих списков
+        whiteListFragment.forceSave()
+        externalListFragment.forceSave()
+        Toast.makeText(this, "Списки сайтов сохранены", Toast.LENGTH_SHORT).show()
+        finish()
     }
 
     private fun exportSites() {
