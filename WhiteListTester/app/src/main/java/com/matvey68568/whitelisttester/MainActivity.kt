@@ -1,11 +1,11 @@
-package com.example.whitelisttester
+package com.matvey68568.whitelisttester
 
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.whitelisttester.databinding.ActivityMainBinding
+import com.matvey68568.whitelisttester.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -21,23 +21,13 @@ class MainActivity : AppCompatActivity() {
 
     // Оптимизированный список: по 1-2 ключевых сайта из каждой категории для скорости
     private val whiteListSites = listOf(
-        "https://gosuslugi.ru",       // Госуслуги
-        "https://ozon.ru",            // Маркетплейсы
-        "https://dodopizza.ru",       // Кафе
-        "https://mts.ru",             // Связь
-        "https://rzd.ru",             // Путешествия
-        "https://gazprombank.ru",     // Банки
-        "https://lentamega.ru",       // Магазины
-        "https://taxi.yandex.ru",     // Такси
-        "https://1c.ru",              // IT
-        "https://vk.com",             // Соцсети
-        "https://rutube.ru"           // Медиа
+        "https://vk.ru",             // Соцсети
+        "https://ya.ru"              // Поиск и сервисы
     )
 
     // Контрольные сайты (должны работать только при полном интернете)
     private val externalSites = listOf(
-        "https://google.com",
-        "https://youtube.com"
+        "https://google.com"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,40 +1,46 @@
 ```
 # Build artifacts
 build/
-.gradle/
 
 # Dependencies
-node_modules/
-.libs/
-.externalNativeBuild/
-
-# IDE files
-.idea/
-.vscode/
-*.iml
-*.ipr
-*.iws
-*.swp
-*.swo
-
-# Log files
-*.log
+.gradle/
 
 # Environment
 .env
 .env.local
 *.env.*
 
+# Logs
+*.log
+
+# Editors
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Distribution / packaging
+*.tar.gz
+*.zip
+*.tar
+*.gz
+
 # OS generated files
 .DS_Store
 Thumbs.db
 
-# Coverage reports
-coverage/
-htmlcov/
-*.coverage
-
 # Temporary files
 *.tmp
+*.temp
 *~
 ```
