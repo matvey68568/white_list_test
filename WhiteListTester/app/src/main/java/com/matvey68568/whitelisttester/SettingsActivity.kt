@@ -145,9 +145,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        // Сохраняем текущие списки перед выходом
-        whiteListFragment.getSites()
-        externalListFragment.getSites()
-        super.onBackPressed()
+        finish()
     }
 }

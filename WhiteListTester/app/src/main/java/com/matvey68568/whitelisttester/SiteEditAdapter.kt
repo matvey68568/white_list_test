@@ -36,9 +36,10 @@ class SiteEditAdapter(
             // Сохраняем при потере фокуса
             binding.siteUrlEditText.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
-                    val url = binding.siteUrlEditText.text.toString().trim()
-                    if (adapterPosition != RecyclerView.NO_POSITION) {
-                        onSiteChanged(adapterPosition, url)
+                    val currentPosition = adapterPosition
+                    if (currentPosition != RecyclerView.NO_POSITION) {
+                        val url = binding.siteUrlEditText.text.toString().trim()
+                        onSiteChanged(currentPosition, url)
                     }
                 }
             }
@@ -47,9 +48,10 @@ class SiteEditAdapter(
             binding.siteUrlEditText.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
                     actionId == android.view.inputmethod.EditorInfo.IME_ACTION_GO) {
-                    val url = binding.siteUrlEditText.text.toString().trim()
-                    if (adapterPosition != RecyclerView.NO_POSITION) {
-                        onSiteChanged(adapterPosition, url)
+                    val currentPosition = adapterPosition
+                    if (currentPosition != RecyclerView.NO_POSITION) {
+                        val url = binding.siteUrlEditText.text.toString().trim()
+                        onSiteChanged(currentPosition, url)
                         binding.siteUrlEditText.clearFocus()
                     }
                     true
@@ -59,8 +61,9 @@ class SiteEditAdapter(
             }
 
             binding.deleteButton.setOnClickListener {
-                if (adapterPosition != RecyclerView.NO_POSITION) {
-                    onSiteDeleted(adapterPosition)
+                val currentPosition = adapterPosition
+                if (currentPosition != RecyclerView.NO_POSITION) {
+                    onSiteDeleted(currentPosition)
                 }
             }
 
