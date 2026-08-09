@@ -99,7 +99,10 @@
         app:cornerRadius="28dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressBar" />
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintBottom_toTopOf="@id/infoTextView"
+        android:clickable="true"
+        android:focusable="true" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/settingsButton"
@@ -130,7 +133,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/settingsButton" />
+        app:layout_constraintTop_toBottomOf="@id/testButton" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sitesRecyclerView"
