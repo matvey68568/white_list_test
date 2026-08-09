@@ -63,6 +63,10 @@ class SiteEditAdapter(
                     onSiteDeleted(adapterPosition)
                 }
             }
+
+            binding.dragHandleView.setOnTouchListener { _, _ ->
+                true
+            }
         }
     }
 }
