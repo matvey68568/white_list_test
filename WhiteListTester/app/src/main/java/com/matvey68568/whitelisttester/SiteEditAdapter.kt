@@ -36,11 +36,8 @@ class SiteEditAdapter(
             // Сохраняем при потере фокуса
             binding.siteUrlEditText.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
-                    val currentPosition = adapterPosition
-                    if (currentPosition != RecyclerView.NO_POSITION) {
-                        val url = binding.siteUrlEditText.text.toString().trim()
-                        onSiteChanged(currentPosition, url)
-                    }
+                    val url = binding.siteUrlEditText.text.toString().trim()
+                    onSiteChanged(position, url)
                 }
             }
             
@@ -48,12 +45,9 @@ class SiteEditAdapter(
             binding.siteUrlEditText.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
                     actionId == android.view.inputmethod.EditorInfo.IME_ACTION_GO) {
-                    val currentPosition = adapterPosition
-                    if (currentPosition != RecyclerView.NO_POSITION) {
-                        val url = binding.siteUrlEditText.text.toString().trim()
-                        onSiteChanged(currentPosition, url)
-                        binding.siteUrlEditText.clearFocus()
-                    }
+                    val url = binding.siteUrlEditText.text.toString().trim()
+                    onSiteChanged(position, url)
+                    binding.siteUrlEditText.clearFocus()
                     true
                 } else {
                     false
@@ -61,10 +55,7 @@ class SiteEditAdapter(
             }
 
             binding.deleteButton.setOnClickListener {
-                val currentPosition = adapterPosition
-                if (currentPosition != RecyclerView.NO_POSITION) {
-                    onSiteDeleted(currentPosition)
-                }
+                onSiteDeleted(position)
             }
 
             binding.dragHandleView.setOnTouchListener { _, _ ->

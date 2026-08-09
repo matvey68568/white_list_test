@@ -25,7 +25,7 @@
         android:layout_marginEnd="8dp"
         android:textSize="16sp"
         android:textColor="?attr/colorOnSurface"
-        android:inputType="textNoSuggestions"
+        android:inputType="textUri"
         android:maxLines="1"
         tools:text="https://example.com" />
 
