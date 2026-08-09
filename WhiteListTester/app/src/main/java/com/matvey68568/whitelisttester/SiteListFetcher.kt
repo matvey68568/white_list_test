@@ -14,7 +14,7 @@ import java.net.URL
 class SiteListFetcher {
 
     companion object {
-        private const val SITES_JSON_URL = "https://raw.githubusercontent.com/matvey68568/white_list_test_lists/refs/heads/main/sites.json"
+        const val SITES_JSON_URL = "https://raw.githubusercontent.com/matvey68568/white_list_test_lists/refs/heads/main/sites.json"
         private const val CONNECT_TIMEOUT = 5000
         private const val READ_TIMEOUT = 10000
     }

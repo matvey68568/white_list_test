@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +27,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var siteAdapter: SiteAdapter
     private val siteListFetcher = SiteListFetcher()
+    
+    // Счетчик нажатий для debug меню
+    private var debugClickCount = 0
+    private var debugClickTimer: Long = 0
 
     // Дефолтные списки на случай ошибки загрузки
     private val defaultWhitelistSites = listOf(
@@ -41,6 +47,11 @@ class MainActivity : AppCompatActivity() {
     // Текущие списки сайтов (загружаются из репозитория)
     private var currentWhitelistSites: List<String> = defaultWhitelistSites
     private var currentExternalSites: List<String> = defaultExternalSites
+    
+    // Debug информация
+    private var lastFetchTime: Long = 0
+    private var fetchSuccess: Boolean = false
+    private var fetchError: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,9 +65,94 @@ class MainActivity : AppCompatActivity() {
         binding.testButton.setOnClickListener {
             startTesting()
         }
+        
+        // Обработчик нажатий на невидимую область для debug меню
+        binding.debugTouchArea.setOnClickListener {
+            handleDebugTouch()
+        }
 
         // Загрузка актуальных списков сайтов при старте
         loadSiteLists()
+    }
+    
+    /**
+     * Обработка нажатий на debug область
+     * Показывает debug меню после 4 нажатий в течение 2 секунд
+     */
+    private fun handleDebugTouch() {
+        val currentTime = System.currentTimeMillis()
+        
+        // Если прошло больше 2 секунд с последнего нажатия, сбрасываем счетчик
+        if (currentTime - debugClickTimer > 2000) {
+            debugClickCount = 0
+        }
+        
+        debugClickCount++
+        debugClickTimer = currentTime
+        
+        if (debugClickCount >= 4) {
+            showDebugMenu()
+            debugClickCount = 0
+        } else {
+            Toast.makeText(this, "Ещё ${4 - debugClickCount} нажатий для debug меню", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    /**
+     * Показывает диалог с debug информацией
+     */
+    private fun showDebugMenu() {
+        val whitelistSize = currentWhitelistSites.size
+        val externalSize = currentExternalSites.size
+        val isDefaultWhitelist = currentWhitelistSites == defaultWhitelistSites
+        val isDefaultExternal = currentExternalSites == defaultExternalSites
+        
+        val fetchStatus = when {
+            fetchSuccess -> "Успешно"
+            fetchError != null -> "Ошибка: $fetchError"
+            else -> "Не загружалось"
+        }
+        
+        val debugInfo = buildString {
+            appendLine("=== Debug Информация ===")
+            appendLine()
+            appendLine("📊 Списки сайтов:")
+            appendLine("  Белый список: $whitelistSize сайтов")
+            appendLine("  Внешние сайты: $externalSize сайтов")
+            appendLine()
+            appendLine("🔄 Статус загрузки:")
+            appendLine("  Последняя загрузка: ${if (lastFetchTime > 0) android.text.format.DateFormat.format(\"HH:mm:ss\", lastFetchTime) else \"Никогда\"}")
+            appendLine("  Результат: $fetchStatus")
+            appendLine()
+            appendLine("📋 Используемые списки:")
+            appendLine("  Белый список дефолтный: $isDefaultWhitelist")
+            appendLine("  Внешний список дефолтный: $isDefaultExternal")
+            appendLine()
+            appendLine("🌐 URL для загрузки:")
+            appendLine("  ${SiteListFetcher.SITES_JSON_URL}")
+            appendLine()
+            appendLine("📱 Текущие сайты:")
+            appendLine("  Белый список: ${currentWhitelistSites.joinToString(\", \")}")
+            appendLine("  Внешние: ${currentExternalSites.joinToString(\", \")}")
+        }
+        
+        AlertDialog.Builder(this)
+            .setTitle("Debug Информация")
+            .setMessage(debugInfo)
+            .setPositiveButton("OK") { _, _ -> }
+            .setNeutralButton("Перезагрузить списки") { _, _ ->
+                loadSiteLists()
+                Toast.makeText(this@MainActivity, "Загрузка списков...", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Сбросить на дефолтные") { _, _ ->
+                currentWhitelistSites = defaultWhitelistSites
+                currentExternalSites = defaultExternalSites
+                fetchSuccess = false
+                fetchError = "Сброшено на дефолтные значения"
+                lastFetchTime = System.currentTimeMillis()
+                Toast.makeText(this@MainActivity, "Списки сброшены на дефолтные", Toast.LENGTH_LONG).show()
+            }
+            .show()
     }
 
     /**
@@ -66,11 +162,23 @@ class MainActivity : AppCompatActivity() {
     private fun loadSiteLists() {
         lifecycleScope.launch(Dispatchers.IO) {
             val defaultLists = SiteListFetcher.SiteLists(defaultWhitelistSites, defaultExternalSites)
-            val siteLists = siteListFetcher.fetchSiteListsOrDefault(defaultLists)
-            
-            withContext(Dispatchers.Main) {
-                currentWhitelistSites = siteLists.whitelist
-                currentExternalSites = siteLists.external
+            try {
+                val siteLists = siteListFetcher.fetchSiteLists()
+                withContext(Dispatchers.Main) {
+                    currentWhitelistSites = siteLists.whitelist
+                    currentExternalSites = siteLists.external
+                    fetchSuccess = true
+                    fetchError = null
+                    lastFetchTime = System.currentTimeMillis()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    currentWhitelistSites = defaultWhitelistSites
+                    currentExternalSites = defaultExternalSites
+                    fetchSuccess = false
+                    fetchError = e.message ?: "Неизвестная ошибка"
+                    lastFetchTime = System.currentTimeMillis()
+                }
             }
         }
     }
