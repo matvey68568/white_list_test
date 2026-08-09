@@ -35,10 +35,8 @@ class SiteEditAdapter(
             binding.siteUrlEditText.setOnFocusChangeListener(null)
             binding.siteUrlEditText.setOnEditorActionListener(null)
             
-            // Устанавливаем текст только если он отличается от текущего
-            if (binding.siteUrlEditText.text.toString() != site) {
-                binding.siteUrlEditText.setText(site)
-            }
+            // Всегда устанавливаем текст - это важно для корректной работы с recycled views
+            binding.siteUrlEditText.setText(site)
             
             // Сохраняем при потере фокуса
             binding.siteUrlEditText.setOnFocusChangeListener { _, hasFocus ->
