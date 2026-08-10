@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
 import com.matvey68568.whitelisttester.databinding.ActivityMainBinding
+import com.matvey68568.whitelisttester.databinding.DialogSettingsBinding
+import com.matvey68568.whitelisttester.databinding.ItemSiteSettingBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -25,14 +29,15 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var siteAdapter: SiteAdapter
+    private lateinit var settingsAdapter: SettingsAdapter
 
-    // Оптимизированный список: по 1-2 ключевых сайта из каждой категории для скорости
-    private val whiteListSites = listOf(
+    // Список сайтов для тестирования (сохраняется в памяти)
+    private var whiteListSites = mutableListOf(
         "https://yandex.ru",        // Поисковик
         "https://yandex.ru/maps",   // Карты
         "https://rutube.ru",        // Видеохостинг
         "https://gosuslugi.ru"      // Госуслуги
-    )
+    ).toList()
 
     // Контрольные сайты (должны работать только при полном интернете)
     private val externalSites = listOf(
@@ -51,6 +56,54 @@ class MainActivity : AppCompatActivity() {
         binding.testButton.setOnClickListener {
             startTesting()
         }
+
+        binding.settingsButton.setOnClickListener {
+            showSettingsDialog()
+        }
+    }
+
+    private fun showSettingsDialog() {
+        val dialogBinding = DialogSettingsBinding.inflate(LayoutInflater.from(this))
+        
+        settingsAdapter = SettingsAdapter(whiteListSites.toMutableList()) { sites ->
+            whiteListSites = sites.toList()
+        }
+        
+        dialogBinding.settingsRecyclerView.layoutManager = LinearLayoutManager(this)
+        dialogBinding.settingsRecyclerView.adapter = settingsAdapter
+
+        dialogBinding.addSiteButton.setOnClickListener {
+            val urlText = dialogBinding.siteInputEditText.text?.toString()?.trim() ?: ""
+            if (isValidUrl(urlText)) {
+                val currentSites = settingsAdapter.getSites().toMutableList()
+                if (!currentSites.contains(urlText)) {
+                    currentSites.add(urlText)
+                    settingsAdapter.setSites(currentSites)
+                    whiteListSites = currentSites.toList()
+                    dialogBinding.siteInputEditText.text?.clear()
+                }
+            } else {
+                dialogBinding.siteInputLayout.error = getString(R.string.invalid_url)
+            }
+        }
+
+        dialogBinding.siteInputEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                dialogBinding.siteInputLayout.error = null
+            }
+        }
+
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+            .setView(dialogBinding.root)
+            .setTitle(R.string.settings_title)
+            .setPositiveButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun isValidUrl(url: String): Boolean {
+        return url.startsWith("http://") || url.startsWith("https://")
     }
 
     private fun startTesting() {
@@ -186,6 +239,97 @@ class MainActivity : AppCompatActivity() {
                         ContextCompat.getColor(context, R.color.md_theme_error)
                     )
                 }
+            }
+        }
+    }
+
+    class SettingsAdapter(
+        private var sites: MutableList<String>,
+        private val onSaveCallback: (List<String>) -> Unit
+    ) : RecyclerView.Adapter<SettingsAdapter.SettingsViewHolder>() {
+
+        fun getSites(): List<String> = sites.toList()
+
+        fun setSites(newSites: List<String>) {
+            sites = newSites.toMutableList()
+            notifyDataSetChanged()
+            onSaveCallback(sites.toList())
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsViewHolder {
+            val view = ItemSiteSettingBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            return SettingsViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: SettingsViewHolder, position: Int) {
+            holder.bind(sites[position], position)
+        }
+
+        override fun getItemCount(): Int = sites.size
+
+        inner class SettingsViewHolder(
+            private val binding: ItemSiteSettingBinding
+        ) : RecyclerView.ViewHolder(binding.root) {
+
+            fun bind(url: String, position: Int) {
+                binding.siteUrlTextView.text = url
+
+                binding.editSiteButton.setOnClickListener {
+                    showEditDialog(url, position)
+                }
+
+                binding.deleteSiteButton.setOnClickListener {
+                    showDeleteDialog(url, position)
+                }
+            }
+
+            private fun showEditDialog(url: String, position: Int) {
+                val editText = TextInputEditText(itemView.context).apply {
+                    setText(url)
+                    hint = itemView.context.getString(R.string.add_site_hint)
+                    setPadding(48, 32, 48, 32)
+                }
+
+                MaterialAlertDialogBuilder(itemView.context, R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+                    .setTitle(R.string.edit_site)
+                    .setView(editText)
+                    .setPositiveButton(R.string.save) { dialog, _ ->
+                        val newUrl = editText.text?.toString()?.trim() ?: ""
+                        if (isValidUrl(newUrl)) {
+                            sites[position] = newUrl
+                            notifyItemChanged(position)
+                            onSaveCallback(sites.toList())
+                        }
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(R.string.cancel) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            private fun showDeleteDialog(url: String, position: Int) {
+                MaterialAlertDialogBuilder(itemView.context, R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+                    .setTitle(R.string.delete_site)
+                    .setMessage("Удалить сайт \"$url\" из списка?")
+                    .setPositiveButton(R.string.delete_site) { dialog, _ ->
+                        sites.removeAt(position)
+                        notifyItemRemoved(position)
+                        onSaveCallback(sites.toList())
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(R.string.cancel) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            private fun isValidUrl(url: String): Boolean {
+                return url.startsWith("http://") || url.startsWith("https://")
             }
         }
     }

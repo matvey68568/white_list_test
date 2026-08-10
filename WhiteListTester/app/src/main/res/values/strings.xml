@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">White List Tester</string>
+    <string name="settings_title">Настройки сайтов</string>
+    <string name="settings_subtitle">Добавляйте или удаляйте сайты для тестирования</string>
+    <string name="add_site_hint">URL сайта (например, https://example.ru)</string>
+    <string name="add_site_button">Добавить сайт</string>
+    <string name="sites_list_title">Список сайтов</string>
+    <string name="edit_site">Редактировать</string>
+    <string name="delete_site">Удалить</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="invalid_url">Неверный формат URL</string>
 </resources>
