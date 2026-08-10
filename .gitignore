@@ -7,6 +7,12 @@ __pycache__/
 dist/
 build/
 target/
+*.class
+*.exe
+*.dll
+*.so
+*.a
+*.out
 
 # Dependencies
 .venv/
@@ -15,6 +21,8 @@ node_modules/
 .mypy_cache/
 .pytest_cache/
 .gradle/
+julia-*/
+zig*/
 
 # Logs and temp files
 *.log
