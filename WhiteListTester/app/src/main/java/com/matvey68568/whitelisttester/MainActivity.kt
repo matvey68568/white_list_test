@@ -65,15 +65,12 @@ class MainActivity : AppCompatActivity() {
             putStringArrayListExtra("whiteListSites", ArrayList(whiteListSites))
             putStringArrayListExtra("externalSites", ArrayList(externalSites))
         }
-        startActivityForResult(intent, SETTINGS_REQUEST_CODE)
+        startActivity(intent)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SETTINGS_REQUEST_CODE && resultCode == RESULT_OK) {
-            // Загружаем обновленные данные из SharedPreferences
-            loadSettingsFromPrefs()
-        }
+    override fun onResume() {
+        super.onResume()
+        loadSettingsFromPrefs()
     }
 
     private fun loadSettingsFromPrefs() {
@@ -91,6 +88,11 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val SETTINGS_REQUEST_CODE = 100
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadSettingsFromPrefs()
     }
 
     private fun startTesting() {

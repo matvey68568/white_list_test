@@ -66,19 +66,17 @@ class SettingsActivity : AppCompatActivity() {
         binding.addSiteButton.setOnClickListener {
             val urlText = binding.siteInputEditText.text?.toString()?.trim() ?: ""
             if (isValidUrl(urlText)) {
-                // Определяем, в какой список добавлять
-                if (urlText == "https://google.com") {
-                    if (!externalSites.contains(urlText)) {
-                        externalSites.add(urlText)
+                val addToExternal = binding.externalRadioButton.isChecked
+                val targetList = if (addToExternal) externalSites else whiteListSites
+                
+                if (!targetList.contains(urlText)) {
+                    targetList.add(urlText)
+                    if (addToExternal) {
                         externalAdapter.setSites(externalSites)
-                        binding.siteInputEditText.text?.clear()
-                    }
-                } else {
-                    if (!whiteListSites.contains(urlText)) {
-                        whiteListSites.add(urlText)
+                    } else {
                         whiteListAdapter.setSites(whiteListSites)
-                        binding.siteInputEditText.text?.clear()
                     }
+                    binding.siteInputEditText.text?.clear()
                 }
                 saveData()
             } else {
@@ -110,7 +108,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onBackPressed() {
         saveData()
         setResult(RESULT_OK)
-        super.onBackPressed()
+        finish()
     }
 
     class SettingsAdapter(

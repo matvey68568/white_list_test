@@ -71,6 +71,30 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <RadioGroup
+                    android:id="@+id/siteTypeRadioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="12dp">
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/whiteListRadioButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="В белый список"
+                        android:checked="true" />
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/externalRadioButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Во внешние сайты" />
+
+                </RadioGroup>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/addSiteButton"
                     android:layout_width="match_parent"
@@ -99,7 +123,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/whiteListRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:clipToPadding="false"
             android:paddingBottom="8dp" />
 
@@ -117,7 +142,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/externalRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:clipToPadding="false"
             android:paddingBottom="16dp" />
 
