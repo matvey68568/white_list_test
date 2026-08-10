@@ -1,1 +1,41 @@
-Nothing needs to be added to .gitignore since only a README.md file was modified and no build artifacts, dependencies, or temporary files were detected in the changes.
+```
+# Android build artifacts
+*.apk
+*.aar
+*.dex
+
+# Android build directories
+build/
+.externalNativeBuild/
+.intermediates/
+outputs/
+
+# Gradle
+.gradle/
+!gradle.properties
+!gradlew
+!gradlew.bat
+
+# Android Studio
+.idea/
+*.iml
+*.iws
+*.log
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Keystore properties file
+key.properties
+
+# Log Files
+*.log
+
+# Built application files
+bin/
+gen/
+out/
+
+# Unit test results
+test-results/
+```
