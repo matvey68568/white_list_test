@@ -1,16 +1,19 @@
 package com.matvey68568.whitelisttester
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
 import com.matvey68568.whitelisttester.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -26,18 +29,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var siteAdapter: SiteAdapter
 
-    // Оптимизированный список: по 1-2 ключевых сайта из каждой категории для скорости
-    private val whiteListSites = listOf(
+    // Список сайтов для тестирования (сохраняется в памяти)
+    private var whiteListSites = mutableListOf(
         "https://yandex.ru",        // Поисковик
         "https://yandex.ru/maps",   // Карты
         "https://rutube.ru",        // Видеохостинг
         "https://gosuslugi.ru"      // Госуслуги
-    )
+    ).toList()
 
     // Контрольные сайты (должны работать только при полном интернете)
-    private val externalSites = listOf(
+    private var externalSites = mutableListOf(
         "https://google.com"
-    )
+    ).toList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +53,40 @@ class MainActivity : AppCompatActivity() {
 
         binding.testButton.setOnClickListener {
             startTesting()
+        }
+
+        binding.settingsButton.setOnClickListener {
+            openSettingsActivity()
+        }
+    }
+
+    private fun openSettingsActivity() {
+        val intent = Intent(this, SettingsActivity::class.java).apply {
+            putStringArrayListExtra("whiteListSites", ArrayList(whiteListSites))
+            putStringArrayListExtra("externalSites", ArrayList(externalSites))
+        }
+        startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadSettingsFromPrefs()
+    }
+
+    companion object {
+        private const val SETTINGS_REQUEST_CODE = 100
+    }
+
+    private fun loadSettingsFromPrefs() {
+        val prefs = getSharedPreferences("app_settings", MODE_PRIVATE)
+        val savedWhiteList = prefs.getStringSet("whiteListSites", null)
+        val savedExternal = prefs.getStringSet("externalSites", null)
+        
+        if (savedWhiteList != null && savedWhiteList.isNotEmpty()) {
+            whiteListSites = savedWhiteList.toList()
+        }
+        if (savedExternal != null && savedExternal.isNotEmpty()) {
+            externalSites = savedExternal.toList()
         }
     }
 
@@ -88,7 +125,7 @@ class MainActivity : AppCompatActivity() {
 
             withContext(Dispatchers.Main) {
                 updateUI(whiteListAccessible, whiteListTotal, externalAccessible, externalTotal, duration)
-                displaySiteResults(whiteListSites.zip(whiteListResults) + externalSites.zip(externalResults))
+                displaySiteResults(whiteListSites.zip(whiteListResults), externalSites.zip(externalResults))
                 binding.testButton.isEnabled = true
                 binding.progressBar.visibility = View.GONE
             }
@@ -141,8 +178,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun displaySiteResults(results: List<Pair<String, Boolean>>) {
-        siteAdapter.setResults(results)
+    private fun displaySiteResults(whiteListResults: List<Pair<String, Boolean>>, externalResults: List<Pair<String, Boolean>>) {
+        val allResults = mutableListOf<Pair<String, Boolean>>()
+        
+        // Добавляем заголовок для белых списков
+        if (whiteListResults.isNotEmpty()) {
+            allResults.add(Pair("=== БЕЛЫЕ СПИСКИ ===", true))
+            allResults.addAll(whiteListResults)
+        }
+        
+        // Добавляем заголовок для внешних сайтов
+        if (externalResults.isNotEmpty()) {
+            allResults.add(Pair("=== ВНЕШНИЕ САЙТЫ ===", true))
+            allResults.addAll(externalResults)
+        }
+        
+        siteAdapter.setResults(allResults)
     }
 
     class SiteAdapter : RecyclerView.Adapter<SiteAdapter.SiteViewHolder>() {
@@ -172,19 +223,31 @@ class MainActivity : AppCompatActivity() {
 
             fun bind(siteResult: Pair<String, Boolean>) {
                 val (url, isWorking) = siteResult
-                siteNameTextView.text = url
-
-                val context = itemView.context
-                if (isWorking) {
-                    statusIconTextView.text = "✓"
-                    statusIconTextView.setTextColor(
-                        ContextCompat.getColor(context, R.color.status_green)
-                    )
+                
+                // Проверяем, является ли элемент заголовком раздела
+                if (url.startsWith("===")) {
+                    siteNameTextView.text = url
+                    siteNameTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.md_theme_primary))
+                    siteNameTextView.textSize = 14f
+                    statusIconTextView.visibility = View.GONE
                 } else {
-                    statusIconTextView.text = "✗"
-                    statusIconTextView.setTextColor(
-                        ContextCompat.getColor(context, R.color.md_theme_error)
-                    )
+                    siteNameTextView.text = url
+                    siteNameTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.md_theme_onSurface))
+                    siteNameTextView.textSize = 15f
+                    statusIconTextView.visibility = View.VISIBLE
+                    
+                    val context = itemView.context
+                    if (isWorking) {
+                        statusIconTextView.text = "✓"
+                        statusIconTextView.setTextColor(
+                            ContextCompat.getColor(context, R.color.status_green)
+                        )
+                    } else {
+                        statusIconTextView.text = "✗"
+                        statusIconTextView.setTextColor(
+                            ContextCompat.getColor(context, R.color.md_theme_error)
+                        )
+                    }
                 }
             }
         }
