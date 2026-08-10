@@ -73,6 +73,10 @@ class MainActivity : AppCompatActivity() {
         loadSettingsFromPrefs()
     }
 
+    companion object {
+        private const val SETTINGS_REQUEST_CODE = 100
+    }
+
     private fun loadSettingsFromPrefs() {
         val prefs = getSharedPreferences("app_settings", MODE_PRIVATE)
         val savedWhiteList = prefs.getStringSet("whiteListSites", null)
@@ -84,15 +88,6 @@ class MainActivity : AppCompatActivity() {
         if (savedExternal != null && savedExternal.isNotEmpty()) {
             externalSites = savedExternal.toList()
         }
-    }
-
-    companion object {
-        private const val SETTINGS_REQUEST_CODE = 100
-    }
-
-    override fun onResume() {
-        super.onResume()
-        loadSettingsFromPrefs()
     }
 
     private fun startTesting() {
