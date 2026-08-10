@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
 
             withContext(Dispatchers.Main) {
                 updateUI(whiteListAccessible, whiteListTotal, externalAccessible, externalTotal, duration)
-                displaySiteResults(whiteListSites.zip(whiteListResults) + externalSites.zip(externalResults))
+                displaySiteResults(whiteListSites.zip(whiteListResults), externalSites.zip(externalResults))
                 binding.testButton.isEnabled = true
                 binding.progressBar.visibility = View.GONE
             }
@@ -194,8 +194,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun displaySiteResults(results: List<Pair<String, Boolean>>) {
-        siteAdapter.setResults(results)
+    private fun displaySiteResults(whiteListResults: List<Pair<String, Boolean>>, externalResults: List<Pair<String, Boolean>>) {
+        val allResults = mutableListOf<Pair<String, Boolean>>()
+        
+        // Добавляем заголовок для белых списков
+        if (whiteListResults.isNotEmpty()) {
+            allResults.add(Pair("=== БЕЛЫЕ СПИСКИ ===", true))
+            allResults.addAll(whiteListResults)
+        }
+        
+        // Добавляем заголовок для внешних сайтов
+        if (externalResults.isNotEmpty()) {
+            allResults.add(Pair("=== ВНЕШНИЕ САЙТЫ ===", true))
+            allResults.addAll(externalResults)
+        }
+        
+        siteAdapter.setResults(allResults)
     }
 
     class SiteAdapter : RecyclerView.Adapter<SiteAdapter.SiteViewHolder>() {
@@ -225,19 +239,31 @@ class MainActivity : AppCompatActivity() {
 
             fun bind(siteResult: Pair<String, Boolean>) {
                 val (url, isWorking) = siteResult
-                siteNameTextView.text = url
-
-                val context = itemView.context
-                if (isWorking) {
-                    statusIconTextView.text = "✓"
-                    statusIconTextView.setTextColor(
-                        ContextCompat.getColor(context, R.color.status_green)
-                    )
+                
+                // Проверяем, является ли элемент заголовком раздела
+                if (url.startsWith("===")) {
+                    siteNameTextView.text = url
+                    siteNameTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.md_theme_primary))
+                    siteNameTextView.textSize = 14f
+                    statusIconTextView.visibility = View.GONE
                 } else {
-                    statusIconTextView.text = "✗"
-                    statusIconTextView.setTextColor(
-                        ContextCompat.getColor(context, R.color.md_theme_error)
-                    )
+                    siteNameTextView.text = url
+                    siteNameTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.md_theme_on_surface))
+                    siteNameTextView.textSize = 15f
+                    statusIconTextView.visibility = View.VISIBLE
+                    
+                    val context = itemView.context
+                    if (isWorking) {
+                        statusIconTextView.text = "✓"
+                        statusIconTextView.setTextColor(
+                            ContextCompat.getColor(context, R.color.status_green)
+                        )
+                    } else {
+                        statusIconTextView.text = "✗"
+                        statusIconTextView.setTextColor(
+                            ContextCompat.getColor(context, R.color.md_theme_error)
+                        )
+                    }
                 }
             }
         }
@@ -313,13 +339,21 @@ class MainActivity : AppCompatActivity() {
             }
 
             private fun showDeleteDialog(url: String, position: Int) {
+                if (position < 0 || position >= sites.size) {
+                    return // Защита от выхода за границы списка
+                }
+                
                 MaterialAlertDialogBuilder(itemView.context)
                     .setTitle(R.string.delete_site)
                     .setMessage("Удалить сайт \"$url\" из списка?")
                     .setPositiveButton(R.string.delete_site) { dialog, _ ->
-                        sites.removeAt(position)
-                        notifyItemRemoved(position)
-                        onSaveCallback(sites.toList())
+                        val currentSites = sites.toMutableList()
+                        if (position < currentSites.size) {
+                            currentSites.removeAt(position)
+                            sites = currentSites
+                            notifyItemRemoved(position)
+                            onSaveCallback(sites.toList())
+                        }
                         dialog.dismiss()
                     }
                     .setNegativeButton(R.string.cancel) { dialog, _ ->
