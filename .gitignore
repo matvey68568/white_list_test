@@ -1,41 +1,72 @@
-```
-# Android build artifacts
-*.apk
-*.aar
-*.dex
+```gitignore
+# Generated files
+*.pyc
+*.class
+*.o
+*.obj
+*.out
+*.dll
+*.so
+*.a
+*.exe
 
-# Android build directories
-build/
-.externalNativeBuild/
-.intermediates/
-outputs/
-
-# Gradle
+# Dependencies
+node_modules/
+venv/
+.venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+target/
 .gradle/
-!gradle.properties
-!gradlew
-!gradlew.bat
 
-# Android Studio
+# Build artifacts
+dist/
+build/
+coverage/
+htmlcov/
+.coverage
+
+# IDE files
+.vscode/
 .idea/
-*.iml
-*.iws
+*.swp
+*.swo
+*.tmp
+
+# Logs
 *.log
 
-# Local configuration file (sdk path, etc)
-local.properties
+# Environment
+.env
+.env.local
+*.env.*
 
-# Keystore properties file
-key.properties
+# System files
+.DS_Store
+Thumbs.db
 
-# Log Files
-*.log
-
-# Built application files
-bin/
-gen/
-out/
-
-# Unit test results
-test-results/
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
 ```
