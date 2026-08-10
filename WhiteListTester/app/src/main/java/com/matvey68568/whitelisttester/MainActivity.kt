@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+        MaterialAlertDialogBuilder(this)
             .setView(dialogBinding.root)
             .setTitle(R.string.settings_title)
             .setPositiveButton(R.string.cancel) { dialog, _ ->
@@ -294,7 +294,7 @@ class MainActivity : AppCompatActivity() {
                     setPadding(48, 32, 48, 32)
                 }
 
-                MaterialAlertDialogBuilder(itemView.context, R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+                MaterialAlertDialogBuilder(itemView.context)
                     .setTitle(R.string.edit_site)
                     .setView(editText)
                     .setPositiveButton(R.string.save) { dialog, _ ->
@@ -313,7 +313,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             private fun showDeleteDialog(url: String, position: Int) {
-                MaterialAlertDialogBuilder(itemView.context, R.style.ThemeOverlay_Material3_MaterialAlertDialog)
+                MaterialAlertDialogBuilder(itemView.context)
                     .setTitle(R.string.delete_site)
                     .setMessage("Удалить сайт \"$url\" из списка?")
                     .setPositiveButton(R.string.delete_site) { dialog, _ ->
