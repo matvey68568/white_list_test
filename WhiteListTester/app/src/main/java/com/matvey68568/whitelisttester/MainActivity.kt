@@ -40,9 +40,9 @@ class MainActivity : AppCompatActivity() {
     ).toList()
 
     // Контрольные сайты (должны работать только при полном интернете)
-    private val externalSites = listOf(
+    private var externalSites = mutableListOf(
         "https://google.com"
-    )
+    ).toList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,8 +65,12 @@ class MainActivity : AppCompatActivity() {
     private fun showSettingsDialog() {
         val dialogBinding = DialogSettingsBinding.inflate(LayoutInflater.from(this))
         
-        settingsAdapter = SettingsAdapter(whiteListSites.toMutableList()) { sites ->
-            whiteListSites = sites.toList()
+        // Объединяем белые списки и внешние сайты для отображения в настройках
+        val allSites = (whiteListSites + externalSites).toMutableList()
+        settingsAdapter = SettingsAdapter(allSites) { sites ->
+            // Разделяем сайты обратно на белые списки и внешние
+            whiteListSites = sites.filter { it != "https://google.com" }.toList()
+            externalSites = sites.filter { it == "https://google.com" }.toList()
         }
         
         dialogBinding.settingsRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -79,7 +83,9 @@ class MainActivity : AppCompatActivity() {
                 if (!currentSites.contains(urlText)) {
                     currentSites.add(urlText)
                     settingsAdapter.setSites(currentSites)
-                    whiteListSites = currentSites.toList()
+                    // Обновляем разделенные списки
+                    whiteListSites = currentSites.filter { it != "https://google.com" }.toList()
+                    externalSites = currentSites.filter { it == "https://google.com" }.toList()
                     dialogBinding.siteInputEditText.text?.clear()
                 }
             } else {
@@ -292,7 +298,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: SettingsViewHolder, position: Int) {
-            holder.bind(sites[position], position)
+            if (position < sites.size) {
+                holder.bind(sites[position], position)
+            }
         }
 
         override fun getItemCount(): Int = sites.size
@@ -314,6 +322,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             private fun showEditDialog(url: String, position: Int) {
+                if (position < 0 || position >= sites.size) {
+                    return // Защита от выхода за границы списка
+                }
+                
                 val editText = TextInputEditText(itemView.context).apply {
                     setText(url)
                     hint = itemView.context.getString(R.string.add_site_hint)
