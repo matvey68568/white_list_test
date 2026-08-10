@@ -1,21 +1,20 @@
 package com.matvey68568.whitelisttester
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.matvey68568.whitelisttester.databinding.ActivityMainBinding
-import com.matvey68568.whitelisttester.databinding.DialogSettingsBinding
-import com.matvey68568.whitelisttester.databinding.ItemSiteSettingBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -29,7 +28,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var siteAdapter: SiteAdapter
-    private lateinit var settingsAdapter: SettingsAdapter
 
     // Список сайтов для тестирования (сохраняется в памяти)
     private var whiteListSites = mutableListOf(
@@ -58,58 +56,41 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.settingsButton.setOnClickListener {
-            showSettingsDialog()
+            openSettingsActivity()
         }
     }
 
-    private fun showSettingsDialog() {
-        val dialogBinding = DialogSettingsBinding.inflate(LayoutInflater.from(this))
-        
-        // Объединяем белые списки и внешние сайты для отображения в настройках
-        val allSites = (whiteListSites + externalSites).toMutableList()
-        settingsAdapter = SettingsAdapter(allSites) { sites ->
-            // Разделяем сайты обратно на белые списки и внешние
-            whiteListSites = sites.filter { it != "https://google.com" }.toList()
-            externalSites = sites.filter { it == "https://google.com" }.toList()
+    private fun openSettingsActivity() {
+        val intent = Intent(this, SettingsActivity::class.java).apply {
+            putStringArrayListExtra("whiteListSites", ArrayList(whiteListSites))
+            putStringArrayListExtra("externalSites", ArrayList(externalSites))
         }
-        
-        dialogBinding.settingsRecyclerView.layoutManager = LinearLayoutManager(this)
-        dialogBinding.settingsRecyclerView.adapter = settingsAdapter
-
-        dialogBinding.addSiteButton.setOnClickListener {
-            val urlText = dialogBinding.siteInputEditText.text?.toString()?.trim() ?: ""
-            if (isValidUrl(urlText)) {
-                val currentSites = settingsAdapter.getSites().toMutableList()
-                if (!currentSites.contains(urlText)) {
-                    currentSites.add(urlText)
-                    settingsAdapter.setSites(currentSites)
-                    // Обновляем разделенные списки
-                    whiteListSites = currentSites.filter { it != "https://google.com" }.toList()
-                    externalSites = currentSites.filter { it == "https://google.com" }.toList()
-                    dialogBinding.siteInputEditText.text?.clear()
-                }
-            } else {
-                dialogBinding.siteInputLayout.error = getString(R.string.invalid_url)
-            }
-        }
-
-        dialogBinding.siteInputEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                dialogBinding.siteInputLayout.error = null
-            }
-        }
-
-        MaterialAlertDialogBuilder(this)
-            .setView(dialogBinding.root)
-            .setTitle(R.string.settings_title)
-            .setPositiveButton(R.string.cancel) { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
+        startActivityForResult(intent, SETTINGS_REQUEST_CODE)
     }
 
-    private fun isValidUrl(url: String): Boolean {
-        return url.startsWith("http://") || url.startsWith("https://")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SETTINGS_REQUEST_CODE && resultCode == RESULT_OK) {
+            // Загружаем обновленные данные из SharedPreferences
+            loadSettingsFromPrefs()
+        }
+    }
+
+    private fun loadSettingsFromPrefs() {
+        val prefs = getSharedPreferences("app_settings", MODE_PRIVATE)
+        val savedWhiteList = prefs.getStringSet("whiteListSites", null)
+        val savedExternal = prefs.getStringSet("externalSites", null)
+        
+        if (savedWhiteList != null && savedWhiteList.isNotEmpty()) {
+            whiteListSites = savedWhiteList.toList()
+        }
+        if (savedExternal != null && savedExternal.isNotEmpty()) {
+            externalSites = savedExternal.toList()
+        }
+    }
+
+    companion object {
+        private const val SETTINGS_REQUEST_CODE = 100
     }
 
     private fun startTesting() {
@@ -271,111 +252,6 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                 }
-            }
-        }
-    }
-
-    class SettingsAdapter(
-        private var sites: MutableList<String>,
-        private val onSaveCallback: (List<String>) -> Unit
-    ) : RecyclerView.Adapter<SettingsAdapter.SettingsViewHolder>() {
-
-        fun getSites(): List<String> = sites.toList()
-
-        fun setSites(newSites: List<String>) {
-            sites = newSites.toMutableList()
-            notifyDataSetChanged()
-            onSaveCallback(sites.toList())
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsViewHolder {
-            val view = ItemSiteSettingBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-            return SettingsViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: SettingsViewHolder, position: Int) {
-            if (position < sites.size) {
-                holder.bind(sites[position], position)
-            }
-        }
-
-        override fun getItemCount(): Int = sites.size
-
-        inner class SettingsViewHolder(
-            private val binding: ItemSiteSettingBinding
-        ) : RecyclerView.ViewHolder(binding.root) {
-
-            fun bind(url: String, position: Int) {
-                binding.siteUrlTextView.text = url
-
-                binding.editSiteButton.setOnClickListener {
-                    showEditDialog(url, position)
-                }
-
-                binding.deleteSiteButton.setOnClickListener {
-                    showDeleteDialog(url, position)
-                }
-            }
-
-            private fun showEditDialog(url: String, position: Int) {
-                if (position < 0 || position >= sites.size) {
-                    return // Защита от выхода за границы списка
-                }
-                
-                val editText = TextInputEditText(itemView.context).apply {
-                    setText(url)
-                    hint = itemView.context.getString(R.string.add_site_hint)
-                    setPadding(48, 32, 48, 32)
-                }
-
-                MaterialAlertDialogBuilder(itemView.context)
-                    .setTitle(R.string.edit_site)
-                    .setView(editText)
-                    .setPositiveButton(R.string.save) { dialog, _ ->
-                        val newUrl = editText.text?.toString()?.trim() ?: ""
-                        if (isValidUrl(newUrl)) {
-                            sites[position] = newUrl
-                            notifyItemChanged(position)
-                            onSaveCallback(sites.toList())
-                        }
-                        dialog.dismiss()
-                    }
-                    .setNegativeButton(R.string.cancel) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
-            }
-
-            private fun showDeleteDialog(url: String, position: Int) {
-                if (position < 0 || position >= sites.size) {
-                    return // Защита от выхода за границы списка
-                }
-                
-                MaterialAlertDialogBuilder(itemView.context)
-                    .setTitle(R.string.delete_site)
-                    .setMessage("Удалить сайт \"$url\" из списка?")
-                    .setPositiveButton(R.string.delete_site) { dialog, _ ->
-                        val currentSites = sites.toMutableList()
-                        if (position < currentSites.size) {
-                            currentSites.removeAt(position)
-                            sites = currentSites
-                            notifyItemRemoved(position)
-                            onSaveCallback(sites.toList())
-                        }
-                        dialog.dismiss()
-                    }
-                    .setNegativeButton(R.string.cancel) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
-            }
-
-            private fun isValidUrl(url: String): Boolean {
-                return url.startsWith("http://") || url.startsWith("https://")
             }
         }
     }
