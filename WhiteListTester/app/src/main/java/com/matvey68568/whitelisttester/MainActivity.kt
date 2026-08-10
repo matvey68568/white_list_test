@@ -248,7 +248,7 @@ class MainActivity : AppCompatActivity() {
                     statusIconTextView.visibility = View.GONE
                 } else {
                     siteNameTextView.text = url
-                    siteNameTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.md_theme_on_surface))
+                    siteNameTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.md_theme_onSurface))
                     siteNameTextView.textSize = 15f
                     statusIconTextView.visibility = View.VISIBLE
                     
