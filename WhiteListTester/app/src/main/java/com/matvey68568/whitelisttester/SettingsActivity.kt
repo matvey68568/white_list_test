@@ -111,6 +111,11 @@ class SettingsActivity : AppCompatActivity() {
         finish()
     }
 
+    override fun onNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
     class SettingsAdapter(
         private var sites: MutableList<String>,
         private val isExternal: Boolean,
