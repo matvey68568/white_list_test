@@ -19,7 +19,7 @@
         android:insetBottom="0dp"
         android:padding="0dp"
         style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-        app:icon="@android:drawable/ic_menu_preferences"
+        app:icon="@drawable/ic_settings"
         app:iconGravity="textStart"
         app:iconPadding="0dp"
         app:cornerRadius="24dp"
